@@ -1,0 +1,254 @@
+---
+title: "United States Coronavirus Pandemic"
+author: "Paul Vu"
+date: "2020-12-12"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, fig.align = "center", warning = F, message = F,
+tidy=TRUE, tidy.opts=list(width.cutoff=60), R.options=list(max.print=100))
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+##### COVID-19 is a virus disease that is may spread through droplets and airborne particles formed when an infected individual coughs, sneezes, talks, or breathes. It has been almost a year since the first COVID-19 case was identified in Wuhan, China, yet it is still prominent in today's society and affects how we live our daily lives today. Some of the important impacts that COVID-19 has had on our society includes: an increase in demand for medical professions to fight on the front lines, an increase in employment layoffs and work from home employments, and the transition from in person classes to online classes. As a college student living in West Campus and seeing other college students roam around west campus similar to the days before Coronavirus is concerning from a health perspective. That is why I've decided to look at two datasets regarding COVID-19 throughout the United States and how much this disease impacts us as a nation. 
+
+```{R}
+#Upload datasets within R Markdown 
+library(tidyverse)
+library(readr)
+CoronaCasesDeathsStates2 <- read_csv("US States Corona Cases, Deaths.csv")
+nrow(CoronaCasesDeathsStates2) #11839 observations 
+CoronaDeathsBySexAndAge2 <- read_csv("COVID-19_Death_Counts_by_Sex__Age__and_State.csv")
+nrow(CoronaDeathsBySexAndAge2) #1416 observations 
+```
+
+##### The first dataset that I've chosen is CoronaCasesDeathsStates2, and this dataset initially contains the variables: date, state, fips, cases, and deaths. Each row keeps a cumulative counts of coronavirus cases and deaths based on the State and  fips code (Federal Information Professing System), a number which uniquely identify geographic areas (each state has a unit fips code). For example, a row within the dataset is: 2020-08-08; Texas; 48; 504605; 8885. This would indicate that as of August 8, 2020, the state of Texas with an fips code of 48 would have a cumulative COVID-19 case count of 504,605 and a cumulative COVID-19 death count of 8,885. These data observations were collected by The New York Times and were compliled from state and local governments and health departments to provide a complete record of the COVID-19 outbreak. I find this dataset interesting becasue it gives you an overall view of how impactful the COVID-19 outbreak hit the United States alone within less than a year. The second dataset that I've chosen is CoronaDeathsBySexAndAge2, and this dataset initially contains the variables: Date as of, Start week, End week, State, Sex, Age group, COVID-19 Deaths, Total Deaths, Pneumonia Deaths, Pneumonia and COVID-19 Deaths, Influenza Deaths, Penumonia, Influenze, or COVID-19 Deaths, and Footnote. However, I decided to remove the last five columns becasue I wanted to focus solely on the impact of COVID-19 and the deaths that it has cost our nation in addition to the columns that has the start week and end week dates becasue I will be fixing the first dataset to match the range of dates in the second dataset. I have also decided to remove the first column becasue it was only stating that as of 2020-08-12 these were the numbers that were reported, and I felt like it did not have too much of an impact on the dataset. Each row in this dataset keeps a cumulative counts of coronavirus deaths and total deaths based on the state which is then further aggregated by sex and age groups. For example, a row within the dataset after removing the undesired columns are: 2020-02-01; 2020-08-08; Texas; Male; 25-34 years; 89; 1980. This would indicate that from February 1, 2020 to August 8, 2020, the Texas population of males between the ages of 25 and 34 years old has had a total of 89 deaths related to COVID-19 and 1,980 deaths total within that range of dates. These observations was collected and provided by the National Center for Health Statistics. I find this dataset interesting becasue it compares the impact that COVID-19 had on deaths compared to total deaths within the same range of dates. Additionally, it breaks this down by state which is then further aggregated by sex and age groups which I thought was unique and interesting. Overall, I find both datesets interesting becasue it gives an overall veiw of the impact of COVID-19 had on our nation and will continue to have until a vaccine is available. A potential association that I expect to see in the first dataset is that there will be an increase in COVID-19 cases and deaths as the date progress due to more testing available within each state. Another potentail assocaation that I expect to see in the second dataset is that tehre will be an increase in COVID-19 deaths and total deaths in the older age groups due to having a weaker immune system and natural causes.
+
+```{R}
+#Fix CoronaCasesDeathStates2 Dataset
+#Notes about CoronaCasesDeathStates2 dataset: it's cumulative 
+#Notes about CoronaDeathsBySexAndAge2 dataset: it's ranged from 2/1/2020 - 8/8/2020 
+#Goals for this chunk: 1) Fix data to end observation at 8/8/2020 to match CoronaDeathsBySexAndAge2 dataset. 2) if there are cases or deaths before 2/1/2020 then remove them from the 8/8/2020 observation to get within the same range as CoronaDeathsBySexAndAge2 dataset (2/1/2020 - 8/8/2020). 3) Have same states in both datasets
+
+#Goal 1: 
+EndDate <- CoronaCasesDeathsStates2 %>% filter(date == "2020-08-08") %>% arrange(fips) #Used to obtain data from 8/8/2020 
+
+#Goal 2: 
+EndOfJanData <- CoronaCasesDeathsStates2 %>% filter(date == "2020-01-31") %>% arrange(fips) #Used to obtain data from 1/31/2020 date
+head(EndOfJanData) #Arizona has 1 case; California has 3 cases; Illinois has 2 cases; Washington has 1 case
+ErrorEndDate <- EndDate %>% filter(fips == "04" | fips == "06" | fips == "17" | fips == "53") #Filters out states that have cases before 2/1/2020 using their fips
+ErrorEndDate <- EndDate %>% group_by(state) %>% select(fips, cases, deaths) #Removes the date becasue we know that it's 8/8/2020 data
+EndOfJanData <- EndOfJanData %>% group_by(state) %>% select(fips, cases, deaths) #Removes the date becasue we know that it's 1/31/2020 data
+FixedEndDate <- full_join(ErrorEndDate, EndOfJanData) #Joins the two datasets (8/8/2020 data and 1/31/2020 data)
+FixedEndDate <- FixedEndDate %>% arrange(state) %>% mutate(cases=max(cases)-min(cases), deaths=max(deaths)-min(deaths)) %>% distinct() #Subtracts 1/31/2020 data from 8/8/2020 
+EndDate <- EndDate %>% select(-c(1)) #Removes date becasue we know this is the 8/8/2020 observation 
+EndDate <- EndDate %>% filter(! str_detect(state, "Arizona")) %>% filter(! str_detect(state, "California")) %>% filter(! str_detect(state, "Illinois")) %>% filter(! str_detect(state, "Washington")) #Removes the 4 states that had cases in January becasue those case counts are inaccurate and won't be following the CoronaDeathsBySexAndAge2 dataset range of 2/1/2020 - 8/8/2020 
+CoronaCasesDeathsStates2 <- full_join(EndDate, FixedEndDate) %>% arrange(state) #Fixed CoronaCasesDeathsStates2 to take account cases before the CoronaDeathsBySexAndAge2 dataset range of 2/1/2020 - 8/8/2020 
+CoronaCasesDeathsStates2 <- CoronaCasesDeathsStates2 %>% rename(`State's Total COVID-19 Cases, No Sex/Age` = cases, `State's Total COVID-19 Deaths, No Sex/Age` = deaths) #Renamed cases and deaths for ease when combining two datasets later on
+
+#Goal #3: 
+CoronaCasesDeathsStates2 %>% summarize_all(n_distinct) #Has 55 States 
+CoronaDeathsBySexAndAge2 %>% summarize_all(n_distinct) #Has 108 States 
+anti_join(CoronaCasesDeathsStates2,CoronaDeathsBySexAndAge2, by=c("state" = "State")) #Used to see which states are extra in CoronaCasesDeathsStates2; CoronaCasesDeathsStates2 has 3 extra states not in CoronaDeathsBySexAndAge2: Guam, Northern Mariana Islands, and Virgin Islands 
+CoronaCasesDeathsStates2 <- CoronaCasesDeathsStates2 %>% filter(! str_detect(state, "Guam")) %>% filter(! str_detect(state, "Northern Mariana Islands")) %>% filter(! str_detect(state, "Virgin Islands"))
+CoronaCasesDeathsStates2 %>% summarize_all(n_distinct) #Has 52 States now; Finalized CoronaCasesDeathsStates2
+```
+
+##### I fixed my CoronaCasesDeathsStates2 dataset, which contained 11839 observations, to match the date range (2/1/2020 - 8/8/2020) of CoronaDeathsBySexAndAge2, taking into account to subtract cases and deaths before the date range started, and making sure that both datasets had the same states. To fix this dataset, I dropped observations that weren't 1/31/2020 and 8/8/2020 which were approximately 11,780 observations. I then subtracted the 1/31/2020 observations, 4 observations, from the 8/8/2020 datasets based on the state to get an accurate cumulative COVID-19 cases and COVID-19 deaths. I then got rid of states that did not match with the CoronaDeathsBySexAndAge2 dataset, causing me to remove 3 additional observations. Ultimately, I removed 11,787 observations from this dataset to have a remaining 52 observations, 50 from the 50 states and 2 D.C. and Puerto Rico, within the CoronaCasesDeathsStates2 dataset. In addition to removing those observation, I removed the date variable becasue I felt it was not needed since I had modified the CoronaCasesDeathsStates2 dataset to fit the range of (2/1/2020 - 8/8/2020). With all of these modifications, this gives me my finalized CoronaCasesDeathsStates2 dataset. 
+
+```{R}
+#Fix CoronaDeathsBySexAndAge2 Dataset
+#Notes about CoronaCasesDeathStates2 dataset: it's cumulative 
+#Notes about CoronaDeathsBySexAndAge2 dataset: it's ranged from 2/1/2020 - 8/8/2020; it has redundant data; has columns regarding other deaths than COVID-19 
+#Goals for this chunk: 1) Get rid of columns that aren't relevant (deaths not pertaining to solely COVID-19, Start and End Week becasue I've changed the CoronaCasesDeathsStates2 dataset to match this one, and data as of becasue it adds nothing important to dataset). 2) Get rid of redundant data. 3) Have same states in both datasets
+
+#Goal 1: 
+CoronaDeathsBySexAndAge2 <- CoronaDeathsBySexAndAge2 %>% select(-c(1:3), -c(9:13))
+
+#Goal 2: 
+CoronaDeathsBySexAndAge2 <- CoronaDeathsBySexAndAge2 %>% filter(! str_detect(`Age group`, "All ages")) %>% filter(! str_detect(`State`, "United States")) #Filters out these redundancy so we can focus solely on the aggregated variables such as individual states and individual age groups based on sex rather than a whole nation and total among sex, respectively 
+
+#Goal 3: 
+CoronaCasesDeathsStates2 %>% summarize_all(n_distinct) #Has 52 States 
+CoronaDeathsBySexAndAge2 %>% summarize_all(n_distinct) #Has 53 States 
+anti_join(CoronaDeathsBySexAndAge2,CoronaCasesDeathsStates2, by=c("State" = "state")) #Used to see which states are extra in CoronaDeathsBySexAndAge2; CoronaDeathsBySexAndAge2 has 1 extra states not in CoronaCasesDeathsStates2: New York City 
+CoronaDeathsBySexAndAge2 %>% filter(str_detect(`State`, "New York")) #New York is broken down into New York and New York City 
+
+NewYork <- CoronaDeathsBySexAndAge2 %>% filter(State=="New York") %>% replace(is.na(.),0) #Obtain data for New York alone
+NewYorkCity <- CoronaDeathsBySexAndAge2 %>% filter(State=="New York City") %>% replace(is.na(.),0) #Obtain data for New York City alone
+
+#Work on Females
+NewYorkFemales <- NewYork %>% filter(Sex=="Female") #Splits NewYork into Females 
+NewYorkFemalesCOVID <- NewYorkFemales %>% select(`COVID-19 Deaths`) #Obtains data for New York Females COVID-19 Deaths
+NewYorkFemalesTOTAL <- NewYorkFemales %>% select(`Total Deaths`) #Obtains data for New York Females Total Deaths
+NewYorkFemalesArray <- cbind(NewYorkFemalesCOVID,NewYorkFemalesTOTAL)
+
+NewYorkCityFemales <- NewYorkCity %>% filter(Sex=="Female") #Similar to previous four lines but for NewYorkCity
+NewYorkCityFemalesCOVID <- NewYorkCityFemales %>% select(`COVID-19 Deaths`)
+NewYorkCityFemalesTOTAL <- NewYorkCityFemales %>% select(`Total Deaths`)
+NewYorkCityFemalesArray <- cbind(NewYorkCityFemalesCOVID,NewYorkCityFemalesTOTAL)
+
+NewYorkOverallFemales <- NewYorkFemalesArray + NewYorkCityFemalesArray #Adds New York and New York City's COVID-19 Deaths and Total Deaths together instead of having separately like it was originally in the CoronaDeathsBySexAndAge2 dataset 
+
+NewYorkOverallFemalesCOVID <- NewYorkOverallFemales %>% select(`COVID-19 Deaths`) #Separates COVID-19 Deaths from Total Deaths 
+NewYorkOverallFemalesCOVID <- as.numeric(unlist(NewYorkOverallFemalesCOVID)) #Unlists COVID-19 Deaths to be mutated later 
+NewYorkOverallFemalesTOTAL <- NewYorkOverallFemales %>% select(`Total Deaths`) #Similar to previous two lines but for Total Deaths
+NewYorkOverallFemalesTOTAL <- as.numeric(unlist(NewYorkOverallFemalesTOTAL)) 
+
+NewYorkFemalesFinale <- CoronaDeathsBySexAndAge2 %>% filter(str_detect(`State`, "New York")) %>% filter(Sex=="Female") %>% mutate(`COVID-19 Deaths`=0, `Total Deaths`=0) %>% mutate(State = recode(State, `New York City` = "New York")) %>% distinct() %>% mutate(`COVID-19 Deaths`=NewYorkOverallFemalesCOVID, `Total Deaths`=NewYorkOverallFemalesTOTAL) #Used to update New York Females with correct COVID-19 Deaths and Total Deaths by adding New York's data with New York City's data. 
+
+#Work on Males; similar to the previous code but for males and not females 
+NewYorkMales <- NewYork %>% filter(Sex=="Male") 
+NewYorkMalesCOVID <- NewYorkMales %>% select(`COVID-19 Deaths`)
+NewYorkMalesTOTAL <- NewYorkMales %>% select(`Total Deaths`)
+NewYorkMalesArray <- cbind(NewYorkMalesCOVID,NewYorkMalesTOTAL)
+
+NewYorkCityMales <- NewYorkCity %>% filter(Sex=="Male")
+NewYorkCityMalesCOVID <- NewYorkCityMales %>% select(`COVID-19 Deaths`)
+NewYorkCityMalesTOTAL <- NewYorkCityMales %>% select(`Total Deaths`)
+NewYorkCityMalesArray <- cbind(NewYorkCityMalesCOVID,NewYorkCityMalesTOTAL)
+
+NewYorkOverallMales <- NewYorkMalesArray + NewYorkCityMalesArray 
+
+NewYorkOverallMalesCOVID <- NewYorkOverallMales %>% select(`COVID-19 Deaths`)
+NewYorkOverallMalesCOVID <- as.numeric(unlist(NewYorkOverallMalesCOVID)) 
+NewYorkOverallMalesTOTAL <- NewYorkOverallMales %>% select(`Total Deaths`)
+NewYorkOverallMalesTOTAL <- as.numeric(unlist(NewYorkOverallMalesTOTAL)) 
+
+NewYorkMalesFinale <- CoronaDeathsBySexAndAge2 %>% filter(str_detect(`State`, "New York")) %>% filter(Sex=="Male") %>% mutate(`COVID-19 Deaths`=0, `Total Deaths`=0) %>% mutate(State = recode(State, `New York City` = "New York")) %>% distinct() %>% mutate(`COVID-19 Deaths`=NewYorkOverallMalesCOVID, `Total Deaths`=NewYorkOverallMalesTOTAL) 
+
+#Putting Females and Memales together
+NewYorkOverall <- full_join(NewYorkMalesFinale, NewYorkFemalesFinale) #THE NEW YORKS ARE FINALLY JOINED 
+CoronaDeathsBySexAndAge2WithoutNY <- CoronaDeathsBySexAndAge2 %>% filter(! str_detect(State, "New York")) #Gets rid of New York and New York City becasue we want to add the NewYorkOverall becasue it has the New Yorks added together rather than seprate
+CoronaDeathsBySexAndAge2 <- full_join(CoronaDeathsBySexAndAge2WithoutNY,NewYorkOverall) %>% arrange(State) %>% replace(is.na(.),0) #Joins the fixed New York Values to the orignal data and replaces NA with 0's 
+CoronaDeathsBySexAndAge2 %>% summarize_all(n_distinct) #Has 52 States now; Finalized CoronaDeathsBySexAndAge2
+```
+
+##### Additionally, I fixed my CoronaDeathsBySexAndAge2, which contained 1416 observations, to remove redundant data and to match the states of CoronaCasesDeathsStates2. To fix this dataset, I dropped observations that was redudant of the aggregated data such as the variable "Age group" equalling "Age ages" and the variable "State" equalling "United States". I took out these observations becasue I wanted to look at the aggregated data, so there was no need to have the sum of these respective variables becasue Age ages will be broken down into differengt age groups while United States can be broken down into individual states. With these changes, I have dropped dropped 250 observations. I then got rid of the states that did not match with the CoronaCasesDeathsStates2 dataset by adding New York City and New York states together since they were broken up to cause me to remove 22 additional observations. Ultimately, I removed 272 observations from this dataset to have a remaining 1144 observations within the CoronaDeathsBySexAndAge2 dataset. In addition to removing those observations, I removed the date variables becasue i felt it was not needed since I had the start and end week columns gave the range of 2/1/2020 - 8/8/2020 throughout the dataset while the date as of column gave when the dat was collected so it did not provide important information to the dataset. Additionally, I also removed the columns that had deaths that were not solely pertained to COVID-19 Deaths or Total Deaths because those two were my main focused for this project. With all of these modifications, this gives me my finalized CoronaDeathsBySexAndAge2 dataset. 
+
+```{R}
+#Joining the Two Datasets 
+CoronaProj1 <- full_join(CoronaCasesDeathsStates2,CoronaDeathsBySexAndAge2, by=c("state"="State"))
+CoronaProj1 <- CoronaProj1 %>% select(state, fips, Sex, `Age group`, `COVID-19 Deaths`, `Total Deaths`, `State's Total COVID-19 Cases, No Sex/Age`, `State's Total COVID-19 Deaths, No Sex/Age`) #Rearranged the columns to my preference. 
+CoronaProj1 <- CoronaProj1 %>% filter(!(`State's Total COVID-19 Cases, No Sex/Age`=="0"))
+```
+
+##### After fixing both datasets, I joined them together via full_join becasue it will include all of the data from both datasets without removing any information which is important to my project. I dropped any cases that would give my dataset duplicates such as whenever "State's Total COVID-19 Cases, No Sex/Age" and "State's Total COVID-19 Deaths, No Sex/Age" would equal 0 becasue it would be a duplicate rows with the same data except these two variables would have 0s in their rows. This new dataset will be called CoronaProj1. Now the CoronaProj1 dataset has the varaibles: "state", "fips", "State's Total COVID-19 Cases, No Sex/Age", "State's Total COVID-19 Deaths, No Sex/Age", "Sex", "Age group", "COVID-19 Deaths", and "Total Deaths". The variables "State's Total COVID-19 Cases, No Sex/Age" and "State's Total COVID-19 Deaths, No Sex/Age" takes each state's total COVID-19 cases and COVID-19 deaths without being aggregated into sex or age. I then rearranged the columns to my preference. This will now be the dataset I will be using for the project. 
+
+```{R}
+#Wrangling for Corona via New York Times 
+NewYorkTimesTotalCasesDeaths <- CoronaProj1 %>% select(1,7:8) %>% distinct() %>% select(2:3) 
+NewYorkTimesTotalCasesDeaths %>% summarize_all(funs(sum))
+NewYorkTimesTotalCasesDeaths %>% summarize_all(funs(min))
+CoronaProj1 %>% filter(`State's Total COVID-19 Cases, No Sex/Age` == "1454")
+CoronaProj1 %>% filter(`State's Total COVID-19 Deaths, No Sex/Age` == "24")
+NewYorkTimesTotalCasesDeaths %>% summarize_all(funs(max))
+CoronaProj1 %>% filter(`State's Total COVID-19 Cases, No Sex/Age` == "556155")
+CoronaProj1 %>% filter(`State's Total COVID-19 Deaths, No Sex/Age` == "32345") 
+NewYorkTimesTotalCasesDeaths %>% summarize_all(funs(mean))
+NewYorkTimesTotalCasesDeaths %>% summarize_all(funs(sd))
+NewYorkTimesTotalCasesDeaths %>% summarize(cor(`State's Total COVID-19 Cases, No Sex/Age`,`State's Total COVID-19 Deaths, No Sex/Age`))
+```
+
+##### Looking at the data collected by the New York Times from date range of 02/01/2020 - 8/8/2020 in the United States, there were a total of 5,005,994 cases of corona and 161,930 deaths caused by corona. According to the New York Times,  the minimum for total COVID-19 cases belongs to Vermont at 1,454 cases and the min for total COVID-19 deaths belongs to Alaska with 24 deaths. On the otherhand, the maximum for total COVID-19 cases belongs to California at 556,155 cases while the max for total COVID-19 deaths belongs to New York at 32,345 deaths. If COVID-19 cases and deaths were distributed evenly among the 52 states, the mean of the data would tell us that there should be approximately 96269.12 COVID-19 cases and approximately 3114.038 COVID-19 deaths within each of the 52 states. However, looking at the standard deviation of COVID-19 cases and COVID-19 deaths according to the New York Times shows a standard deviation of 96269.12	and 3114.038, respctively. Having such a high standard deviation would indicate that the values of each state's COVID-19 cases and COVID-19 deaths tend to be far from the mean of COVID-19 cases and COVID-19 deaths. This is significant becasue it shows the disparity of how COVID-19 affects each state differently with some states feeling the impact of COVID-19 more than other states. Lastly, I wanted to look to see if there was a correlation between the State's Total COVID-19 Cases and the State's Total COVID-19 Deaths, I found that there was a strong correlation coefficient, 0.7065494, between the two variables indicating that there's a statistical relationship between the two variables. 
+
+```{R}
+#Wrangling for Corona via NCHS 
+#General
+NCHSOverallCovidDeaths <- CoronaProj1 %>% select(1,3:5) %>% distinct() %>% pivot_wider(., names_from="Sex", values_from="COVID-19 Deaths") %>% mutate("Total COVID-19 Death (NCHS)" = Male + Female) %>% select(3:5) %>% summarize_all(funs(sum)) 
+
+NCHSOverallTotalDeaths <- CoronaProj1 %>% select(1,3:4,6) %>% distinct() %>% pivot_wider(., names_from="Sex", values_from="Total Deaths") %>% mutate("Total Deaths (NCHS)" = Male + Female) %>% select(3:5) %>% summarize_all(funs(sum)) 
+
+NCHSOverallCovidDeaths
+NCHSOverallTotalDeaths
+(NCHSOverallCovidDeaths/NCHSOverallTotalDeaths)*100
+
+CoronaProj1 %>% summarize(cor(`COVID-19 Deaths`, `Total Deaths`, use = "pair"))
+
+#COVID-19 DEATHS BY AGE GROUP AND STATE
+NCHSOverallCovidDeathsByAgeGroupState <- CoronaProj1 %>% select(1,3:5) %>% distinct() %>% pivot_wider(., names_from="Sex", values_from="COVID-19 Deaths") %>% mutate("Total COVID-19 Death (NCHS)" = Male + Female) %>% select(1,2,5) %>% group_by(state) %>% mutate(row=row_number()) %>% pivot_wider(names_from="state",values_from="Total COVID-19 Death (NCHS)") %>% select(-row) %>% mutate("NCHS Overall COVID-19 Deaths" = rowSums(.[2:53]))
+
+NCHSOverallCovidDeathsByAgeGroupState %>% select(1,54) 
+
+NCHSOverallCovidDeathsByAgeGroupStateWithoutOverall <- NCHSOverallCovidDeathsByAgeGroupState %>% select(-54) 
+TransposedNCHSOverallCovidDeathsByAgeGroupState <- as.data.frame(t(NCHSOverallCovidDeathsByAgeGroupStateWithoutOverall)) 
+TransposedNCHSOverallCovidDeathsByAgeGroupState <- TransposedNCHSOverallCovidDeathsByAgeGroupState %>% select("Under 1 year" = V1, "1-4 years" = V2, "5-14 years" = V3, "15-24 years" = V4, "25-34 years" = V5, "35-44 years" = V6, "45-54 years" = V7, "55-64 years" = V8, "65-74 years" = V9, "75-84 years" = V10, "85 years and over" = V11)
+TransposedNCHSOverallCovidDeathsByAgeGroupState <- mutate_all(TransposedNCHSOverallCovidDeathsByAgeGroupState, function(x) as.numeric(as.character(x))) %>% na.omit()
+
+TotalCovidDeathsByStateAgeGroup <- CoronaProj1 %>% select(1,3:5) %>% distinct() %>% pivot_wider(., names_from="Sex", values_from="COVID-19 Deaths") %>% mutate("Total COVID-19 Death (NCHS)" = Male + Female) %>% select(1,2,5)
+TransposedNCHSOverallCovidDeathsByAgeGroupState %>% summarize_all(funs(min))
+TransposedNCHSOverallCovidDeathsByAgeGroupState %>% summarize_all(funs(max))
+TotalCovidDeathsByStateAgeGroup %>% filter(`Age group`=="15-24 years") %>% filter(`Total COVID-19 Death (NCHS)` == "44")
+TotalCovidDeathsByStateAgeGroup %>% filter(`Age group`=="25-34 years") %>% filter(`Total COVID-19 Death (NCHS)` == "230")
+TotalCovidDeathsByStateAgeGroup %>% filter(`Age group`=="35-44 years") %>% filter(`Total COVID-19 Death (NCHS)` == "687")
+TotalCovidDeathsByStateAgeGroup %>% filter(`Age group`=="45-54 years") %>% filter(`Total COVID-19 Death (NCHS)` == "1875")
+TotalCovidDeathsByStateAgeGroup %>% filter(`Age group`=="55-64 years") %>% filter(`Total COVID-19 Death (NCHS)` == "4605")
+TotalCovidDeathsByStateAgeGroup %>% filter(`Age group`=="65-74 years") %>% filter(`Total COVID-19 Death (NCHS)` == "7276")
+TotalCovidDeathsByStateAgeGroup %>% filter(`Age group`=="75-84 years") %>% filter(`Total COVID-19 Death (NCHS)` == "8292")
+TotalCovidDeathsByStateAgeGroup %>% filter(`Age group`=="85 years and over") %>% filter(`Total COVID-19 Death (NCHS)` == "8928")
+
+#COVID-19 DEATHS BY STATE 
+NCHSOverallCovidDeathsByState <- NCHSOverallCovidDeathsByAgeGroupState %>% select(-1,-54)  %>% summarize_all(funs(sum)) %>% pivot_longer(c(1:52), names_to="States", values_to="NCHS Total COVID-19 Deaths")
+
+NCHSOverallCovidDeathsByState %>% arrange(`NCHS Total COVID-19 Deaths`)
+NCHSOverallCovidDeathsByState %>% arrange(-`NCHS Total COVID-19 Deaths`)
+NCHSOverallCovidDeathsByState %>% select(-1) %>% summarize_all(funs(mean))
+NCHSOverallCovidDeathsByState %>% select(-1) %>% summarize_all(funs(sd))
+
+```
+
+##### I wanted to take a general look at the data collected by the NCHS then go deeper into details. I pivot wider my dataset so that I can look at the COVID-19 Deaths and Total Deaths based on sex alone rather than all three aggregated variables of state, age group,and sex. It was discovered that according to the NCHS, there were 79,875 males and 68,462 females to make a whopping sum of 148,337 individuals who have died from coronavirus from the date range of 02/01/2020 - 8/8/2020 in the United States alone. This shows a disceptancy between the number of COVID-19 related deaths, approximaetly 13,000, collected by the NCHS and the New York Times with the New York Times reporting more COVID-related deaths. The NCHS data also tells that there were 861,159 males and 792,220 females to make a whopping sum of 1,653,379	total inidviduals who have passed away within the same time range in the United States. I took it further and calculated the percentage of deaths that coronavirus has caused in males, females, and overall to discover that coronavirus has caused approximately 9.275%, 8.642%, and 8.972% respectively according to NCHS data. With a small percentage of deaths caused by COVID-19, I didn't think there would be a big correlation; however, running a correlation between COVID-19 Deaths and Total Deaths shows that there is a strong correlation, 0.7804054, between the two variables. Looking at the NCHS data based on age group and states, the minimum value in each age group is 0 which indicates that in each age group, there was at least one state that did not have a COVID-19 death in that age group. On the otherhand, the three youngest age groups (Under 1 year, 1-4 years, and 5-14 years) have a maximum value of 0, 15-24 years had a maximum value of 44, 25-34 years had a value of 230, 35-44 years had a value of 687, 45-54 years had a maximum value of 1,875, 55-64 years had a value of 4,605, 65-74 years had a value of 7,276, 75-84 years had a value of 8,292, and 85 years and over had a value of 8,928. To little surprise, it turns out that New York had the maximum values of COVID-19 deaths in each age group. Additionally, I used another pivot wider based on sex in order to get the total COVID-19 deaths separated by state and age groups, and I took it a step further by grouping by states in order to pivot wider based on state to get a dataset, which will be called NCHSOverallCovidDeathsByAgeGroupState, that looks at each state's total COVID-19 deaths based on age groups. There seems to be a trend where with each subsequential age group, there's an increase in COVID-19 deaths with the lowest being in the age groups "Under 1 year", "1-4 years", and "5-14 years" and the highest COVID-19 deaths among the "85 years and over" age group. After seeing this trend, I wanted to see how each individual states did on their own so took the sum of each state's COVID-19 deaths, and I pivot longer the data to get a dataset, called NCHSOverallCovidDeathsByState, that looks at each state's total COVID-19 deaths. In contrast to the New York Times data collection, the NCHS data collections show that there are three states, Alaska, Hawaii, and Wyoming who have the minimum COVID-19 deaths with 0 a piece. However, similar to the New York Times, NCHS reported that New York has the maximum COVID-19 deaths. The mean of the NCHS data tells us that there should be approximately 2852.635	COVID-19 deaths within each of the 52 states. The standard deviation of COVID-19 deaths is 5074.238	according to the NCHS data, and a standard deviation this high would supports the idea that there's some disparity of how COVID-19 affects each state. 
+
+```{R}
+CoronaProj1CorMat <- CoronaProj1 %>% select_if(is.numeric) %>% cor(use="pair") 
+CoronaProj1TidyCor <- CoronaProj1CorMat %>% as.data.frame %>% rownames_to_column("var1") %>% pivot_longer(-1,names_to="var2", values_to="correlation")
+CoronaProj1TidyCor %>% ggplot(aes(var1,var2,fill=correlation)) + geom_tile() + scale_fill_gradient2(low="red",mid="white",high="blue") + geom_text(aes(label=round(correlation,2)), color="black", size=4) + theme(axis.text.x= element_text(angle=90, hjust=1)) + coord_fixed()
+```
+
+##### The correlation heatmap shows the correlation between the variables of "COVID-19 Deaths", "Total Deaths", "State's Total COVID-19 Cases, No Sex/Age", and "State's Total COVID-19 Deaths, No Sex/Age". One thing that I saw was that the data that were collected together via New York Times ("State's Total COVID-19 Cases, No Sex/Age", and "State's Total COVID-19 Deaths, No Sex/Age") of NCHS ("COVID-19 Deaths" and "Total Deaths") have the strongest correlation to one another with correlations such as Total Deaths x COVID-19 Deaths = .78 and State’s Total COVID-19 Deaths x State’s Total COVID-19 Cases = .71. On the otherhand, data that was not collected together such as "Total Deaths" and  "State's Total COVID-19 Cases, No Sex/Age" have a weaker correlation to one another such as Total Deaths x State’s Total COVID-19 Deaths, No Sex/Age= .39 and State’s Total COVID-19 Deaths, no Sex/Age x COVID-19 Deaths = .56 . This would make sense becasue they were not collected together so it would have been strange if they had a strong correlation. The New York Times data were compliled from state and local governments and health departments to provide a complete record of the COVID-19 outbreak. While the NCHS data were collected and provided by the National Center for Health Statistics itself. 
+
+```{R}
+CoronaProj1Graphs <- CoronaProj1 %>% select(1,3:5) %>% distinct() %>% pivot_wider(., names_from="Sex", values_from="COVID-19 Deaths") %>% mutate("Total COVID-19 Death (NCHS)" = Male + Female)
+
+ggplot(CoronaProj1Graphs, aes(x=`Male`, y=`Female`)) + geom_line(aes(group=`Age group`)) + geom_point(aes(color=`Age group`)) + scale_x_continuous(breaks=seq(0,5500,500)) + scale_y_continuous(breaks=seq(0,5500,500)) + ggtitle("COVID-19 Deaths in the United States") + xlab("COVID-19 Deaths for Males") + ylab("COVID-19 Deaths for Females") + theme_minimal()
+```
+
+##### The scatter plot shows the COVID-19 deaths in the United States broken down into gender and then grouped together by age groups with each dot representing a different state. Looking at the scatter plot briefly, we can see that the older age  groups (55-64 years age group and older) have more COVID-19 deaths despite gender. Another thing that comes to mind is that there is a state that has a high COVID-19 death for females that is nearly 5,500 while there are two dots that have a high COVID-19 death for males that is just a little over 4,500 deaths. Additionally, there are a clump of dots within the parameters of 500 units on both axis. Although 500 seems little compared to 4,500 and 5,500, the plethora of dots are important becasue it helps us know the impact that COVID-19 has on our nation. This clump of dots illustrates a disparity among the states in how COVID-19 affects each state with some states feeling the impact of COVID-19 more than other states.
+
+```{R}
+ggplot(CoronaProj1Graphs, aes(x=`state`, y=`Total COVID-19 Death (NCHS)`)) + aes(fill=`Age group`) +  geom_bar(stat="summary", position = "dodge") +  coord_flip() + ggtitle("COVID-19 Deaths in the United States by States") + ylab("Total COVID-19 Deaths") + xlab("States") + theme(axis.text.x = element_text(angle=45, hjust=1)) + theme_light()
+```
+
+##### The grouped bar graphs shows the COVID-19 deaths in the United States broken down into states and grouped together by age groups with each age group having a different color bar. With this graph, I wanted to talk about the disparity about the impact of COVID-19 broken down into states. Looking at the age groups, we can see specifically that it is common among the states that the older age  groups (55-64 years age group and older) have more COVID-19 deaths. An important take away from this grouped bar graph is that many states don't have any age groups that past the 1,250 death marker while there are approximately 10 states that exceeds this marker. This helps illustrates that COVID-19 affects states differently with some states having high death volumes compared to the other states. 
+
+```{R}
+library(cluster)
+library(GGally)
+
+CoronaProj1Cluster <- CoronaProj1Graphs %>% select(3:5) %>% scale %>% as.data.frame
+gower1 <- daisy(CoronaProj1Cluster, metric="gower")
+
+sil_width_proj <- vector()
+for(i in 2:10){
+  fitness <- pam(CoronaProj1Cluster, k = i)  
+  sil_width_proj[i] <- fitness$silinfo$avg.width
+}
+ggplot() + geom_line(aes(x=1:10, y=sil_width_proj)) + scale_x_continuous(name="k", breaks=1:10)
+
+CoronaProj1Pam <- CoronaProj1Cluster %>% pam(2)
+plot(CoronaProj1Pam, which=2)
+CoronaProj1Cluster <- CoronaProj1Cluster %>% mutate(cluster=as.factor(CoronaProj1Pam$clustering))
+
+ggpairs(CoronaProj1Cluster, columns = 1:3, aes(color=cluster))
+
+```
+
+##### The for loop and the ggplot following the for loop were used to determine the number of clusters I should use for my data ranging from 2 clusters to 10 clusters. The number of cluster turned out to be 2. The next few codes were used to obtained the average silhouete width to see if there is a structure to be found. With a average silhouette width of 0.86, a strong structure has been found. We would want to choose the k value that has the highest average silhouette width becasue a silhouette width indexes how well points are assigned to their clusters, so a higher silhouette width would be more cohesive and more separated. This shows that there is a strong Goodness of Fit within this cluster. I also saved the cluster assignments to the dataset so that I can use them to color the points in the ggpairs graph. 
+
+##### Overall, I learned a lot about COVID-19 and how much it has impacted our nation. In the span of 2/1/2020 - 8/8/2020, there were 5,005,994 cases and 161,930 COVID-19 related deaths in the United States according to the New York Times. While the National Center for Health Statistics reported that there were a total of 148,337 COVID-19 related deaths and 1,653,379 total deaths during those range of dates. COVID-19 has the greatest impact on the older age groups via more deaths than the younger age groups. Additionally, each state feels the impact of COVID-19 differently with some states such as New York and New Jersey having some of the highest death counts due to COVID-19. Overall, I think we should still take COVID-19 seriously and still take precautions when we can especially when it comes to our health and the health of our loved ones. 

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Paul Vu</title>
+    <link>/post/</link>
+    <description>Recent content in Posts on Paul Vu</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Thu, 10 Dec 2020 00:00:00 +0000</lastBuildDate><atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Communication between Python and R</title>
+      <link>/post/2020/12/10/communication-between-python-and-r/</link>
+      <pubDate>Thu, 10 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/post/2020/12/10/communication-between-python-and-r/</guid>
+      <description>Communication between Python and R Data Science is one of the biggest growing industries in today’s society with Python and R being two of the most used languages. Python is more of a general purpose programming language while R is more of a statistical computing and graphing language. Although each language has their pros and cons, we can use both languages together to effectively communicate analytics and graphical statistics about any datasets.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Paul Vu" />
+    
+    <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico">
+    <title>United States Heart Failure Factors</title>
+    <meta name="generator" content="Hugo 0.79.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="/post/">BLOG</a></li>
+        
+        <li><a href="/projects/">PROJECTS</a></li>
+        
+        <li><a href="/resume/">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="/project/project2/">United States Heart Failure Factors</a></strong>
+          </h3>
+        </div>
+ 
+<div class="blog-title">
+          <h4>
+         December 12, 2020 
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+<link href="/rmarkdown-libs/anchor-sections/anchor-sections.css" rel="stylesheet" />
+<script src="/rmarkdown-libs/anchor-sections/anchor-sections.js"></script>
+
+
+<div id="r-markdown" class="section level2">
+<h2>R Markdown</h2>
+<p>This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <a href="http://rmarkdown.rstudio.com" class="uri">http://rmarkdown.rstudio.com</a>.</p>
+<p>When you click the <strong>Knit</strong> button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</p>
+<div id="heart-failure-or-congestive-heart-failure-is-a-condition-that-occurs-when-an-indviduals-hearts-muscles-fails-to-pump-blood-as-well-as-it-should.-there-are-many-factors-that-could-contribute-to-heart-failure-such-as-hypertension-high-blood-pressure-arrhythimias-irregular-heartbeat-obesity-previous-strokes-and-much-more.-according-to-the-cdc-heart-failure-accounts-for-approximately-13.4-of-deaths-in-2018.-i-believe-that-13.4-is-a-relatively-high-number-and-by-understanding-potential-factors-that-can-cause-heart-failure-we-can-potentially-reduce-this-13.4-to-a-lower-percentage.-that-is-why-ive-decided-to-look-at-this-dataset-regarding-potentail-factors-that-causes-heart-failutre-throughout-the-united-states." class="section level5">
+<h5>Heart failure or congestive heart failure is a condition that occurs when an indvidual’s hearts muscles fails to pump blood as well as it should. There are many factors that could contribute to heart failure such as hypertension (high blood pressure), arrhythimias (irregular heartbeat), obesity, previous strokes, and much more. According to the CDC, heart failure accounts for approximately 13.4% of deaths in 2018. I believe that 13.4% is a relatively high number and by understanding potential factors that can cause heart failure, we can potentially reduce this 13.4% to a lower percentage. That is why I’ve decided to look at this dataset regarding potentail factors that causes heart failutre throughout the United States.</h5>
+<pre class="r"><code>#Upload datasets within R Markdown 
+library(tidyverse)
+library(readr)
+HeartFailureFactors &lt;- read_csv(&quot;Heart Failure Factors.csv&quot;)
+nrow(HeartFailureFactors) #950 observations </code></pre>
+<pre><code>## [1] 950</code></pre>
+<pre class="r"><code>ncol(HeartFailureFactors) #16 variables </code></pre>
+<pre><code>## [1] 16</code></pre>
+</div>
+<div id="the-dataset-that-ive-choosen-is-heartfailurefactors-and-the-dataset-has-3-numeric-variables-los-length-of-stay-at-the-hospital-after-admission-for-heart-failure-age-patients-age-and-fu_time-follow-up-time-which-is-the-number-of-days-since-admission-to-hospital-2-categorical-variables-with-5-categories-quintile-socio-economic-status-with-1-being-the-most-affluent-and-5-being-the-poorest-and-ethnicgroup-1-white-2-black-3-indian-subcontinent-4-not-known-9-other-and-11-binary-variables-where-0-indicates-that-the-patient-does-not-have-a-certain-factor-recorded-and-1-indicates-that-the-patient-has-a-certain-factor-recorded-death-cancer-cabg-previous-heart-bypass-dementia-diabetes-any-type-of-diabetes-hypertension-high-blood-pressure-mental_health-any-mental-illness-arrhythimias-irregular-heartbeat-obestiy-stroke-a-history-of-stroke-and-lastly-sex-which-differs-from-the-recording-of-01-and-is-recorded-as-12-with-1-being-males-and-2-being-females.-these-data-observtions-were-collected-from-a-random-sample-of-emergency-unplanned-admissions-for-heart-failures-from-every-public-national-health-service-nhs-hospitals-and-private-hospitals-in-the-country-to-provide-a-represented-taret-population-for-the-dataset.-i-find-this-dataset-interesting-becasue-it-breaksdown-potential-factors-that-can-cause-heart-failure-in-individuals-and-i-think-itll-be-interesting-to-view-these-factors-overall-and-to-see-if-there-are-any-connections-between-any-of-these-factors-and-heart-failure.-the-heartfailurefactors-dataset-contains-950-observations-and-16-variables." class="section level5">
+<h5>The dataset that I’ve choosen is HeartFailureFactors, and the dataset has (3) numeric variables: los (length of stay at the hospital after admission for heart failure), age (patient’s age), and fu_time (follow up time which is the number of days since admission to hospital), (2) categorical variables with 5 categories: quintile (socio-economic status with 1 being the most affluent and 5 being the poorest) and ethnicgroup (1 = white, 2 = black, 3 = indian subcontinent, 4 = not known, 9 = other), and (11) binary variables where 0 indicates that the patient does not have a certain factor recorded and 1 indicates that the patient has a certain factor recorded: death, cancer, cabg (previous heart bypass), dementia, diabetes (any type of diabetes), hypertension (high blood pressure), mental_health (any mental illness), arrhythimias (irregular heartbeat), obestiy, stroke (a history of stroke), and lastly sex (which differs from the recording of 0/1 and is recorded as 1/2 with 1 being males and 2 being females). These data observtions were collected from a random sample of emergency (unplanned) admissions for heart failures from every public (National Health Service, NHS) hospitals and private hospitals in the country to provide a represented taret population for the dataset. I find this dataset interesting becasue it breaksdown potential factors that can cause heart failure in individuals, and I think it’ll be interesting to view these factors overall and to see if there are any connections between any of these factors and heart failure. The HeartFailureFactors dataset contains 950 observations and 16 variables.</h5>
+<pre class="r"><code>library(rstatix)
+HeartFailureFactors &lt;- HeartFailureFactors %&gt;% mutate(death = recode(death, `0` = &quot;Alive&quot;, `1` = &quot;Dead&quot;))
+#Test MANOVA Assumptions 
+group &lt;- HeartFailureFactors$death 
+DVs &lt;- HeartFailureFactors %&gt;% select(los, age, fu_time)
+#Test multivariate normality for each group (null: assumption met)
+sapply(split(DVs,group), mshapiro_test)</code></pre>
+<pre><code>##           Alive       Dead        
+## statistic 0.7719031   0.8701553   
+## p.value   2.39905e-25 2.570468e-19</code></pre>
+<pre class="r"><code>#If any p&lt;.05, stop (assumption violated). If not, test homogeneity of covariance matrices
+#Box&#39;s M test (null: homogeneity of vcov mats assumption met)
+box_m(DVs, group)</code></pre>
+<pre><code>## # A tibble: 1 x 4
+##   statistic  p.value parameter method                                           
+##       &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;                                            
+## 1      118. 5.02e-23         6 Box&#39;s M-test for Homogeneity of Covariance Matri…</code></pre>
+<pre class="r"><code>lapply(split(DVs,group), cov)</code></pre>
+<pre><code>## $Alive
+##                 los         age     fu_time
+## los      102.171393    9.153872   -519.5928
+## age        9.153872  146.608246   -972.9264
+## fu_time -519.592818 -972.926420 115531.7930
+## 
+## $Dead
+##                 los         age     fu_time
+## los      215.846534    2.793586   -543.1176
+## age        2.793586   75.667101   -479.4177
+## fu_time -543.117631 -479.417728 111467.9992</code></pre>
+<pre class="r"><code>#p-value less than .05, indicating there&#39;s a statistically significant diference against null hypothesis indicating that homogeneity of wthin-group covariance matrices is not met. 
+
+#Manova testing 
+man1 &lt;- manova(cbind(los, age, fu_time)~death, data=HeartFailureFactors)
+summary(man1) #significant; need to perform univariate ANOVA and post-hoc t tests to see which groups differ</code></pre>
+<pre><code>##            Df  Pillai approx F num Df den Df    Pr(&gt;F)    
+## death       1 0.11531     41.1      3    946 &lt; 2.2e-16 ***
+## Residuals 948                                             
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>#Univariate ANOVAS and T-tests
+summary.aov(man1) #gets univariate ANOVAs from MANOVA object; all three are significant </code></pre>
+<pre><code>##  Response los :
+##              Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+## death         1   2865 2865.12  18.114 2.287e-05 ***
+## Residuals   948 149945  158.17                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+##  Response age :
+##              Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+## death         1  11925 11925.0   106.8 &lt; 2.2e-16 ***
+## Residuals   948 105855   111.7                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+##  Response fu_time :
+##              Df    Sum Sq Mean Sq F value    Pr(&gt;F)    
+## death         1   1871523 1871523  16.485 5.309e-05 ***
+## Residuals   948 107626348  113530                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>1-.95^4 #chance of type I error </code></pre>
+<pre><code>## [1] 0.1854938</code></pre>
+<pre class="r"><code>.05/4 #Bonferroni Correction</code></pre>
+<pre><code>## [1] 0.0125</code></pre>
+</div>
+<div id="a-one-way-manova-was-conducted-to-determine-the-effect-of-the-patients-death-alive-or-dead-on-three-dependent-variables-los-or-length-of-stay-age-and-fu_time-or-follow-up-time.-first-i-tested-a-pair-of-assumptions-for-a-manova-testing-and-the-examination-of-multivariate-normality-for-each-group-shows-p-values-of-2.39905e-25-for-patients-alive-and-approximately-2.570468e-19-for-patients-dead-which-will-suggests-that-the-assumption-of-response-varaibles-have-multivariate-normaliy-would-fails.-additionally-examination-of-covariance-matrices-for-each-group-revealed-a-p-value-of-5.02e-23-suggesting-that-the-assumption-of-the-variance-covariance-matrices-for-our-response-variables-being-equal-would-also-fail.-however-the-assumption-that-the-data-is-random-samples-and-independent-observations-is-true-becasue-the-data-observtions-were-collected-from-a-random-sample-of-emergency-unplanned-admissions-for-heart-failures-from-every-public-national-health-service-nhs-hospitals-and-private-hospitals-in-the-country-to-provide-a-represented-taret-population-for-the-dataset.-the-one-way-manova-test-shows-that-significant-differences-were-found-among-the-the-two-options-alive-or-dead-for-the-death-variable-with-a-pillai-trace-of-0.11531-f-staistics-of-41.1-and-a-p-value-2.2e-16.-with-a-significant-difference-using-the-one-way-anova-univariate-anovas-must-be-conducted-as-follow-up-tests-to-the-manova-using-the-bonferroni-method-for-controlling-type-i-error-rates-for-multiple-comparisons.-the-univarate-anovas-for-los-age-and-fu_time-were-all-significant-f-18.114-and-p-value-2.287e-05-f-106.8-and-p-value-2.2e-16-and-f-16.485-and-p-value-5.309e-05-respectively.-post-hoc-analysis-was-not-performed-because-there-were-only-two-categorical-variable-in-the-death-variable.-a-total-of-4-tests-were-conducted-1-manova-and-3-anova.-with-a-total-of-4-tests-we-have-approximately-18.55-chance-of-having-a-type-i-error-if-we-did-not-adjust-the-p-value.-however-we-should-adjust-the-p-value-to-reduce-the-chances-of-type-i-error-and-after-correcting-the-p-value-we-obtain-an-adjusted-p-value-of-approximately-α-0.0125.-even-after-correcting-the-p-value-both-categorical-variable-dead-and-alive-for-the-death-variable-were-found-to-differ-significantly-from-each-other-in-terms-of-los-age-and-fu_time-after-adjusting-for-the-multiple-comparisons-with-p-values-of-2.287e-05-2e-16-and-5.309e-05-respectively." class="section level5">
+<h5>A one-way MANOVA was conducted to determine the effect of the patient’s death (alive or dead) on three dependent variables (los or length of stay, age, and fu_time or follow up time). First, I tested a pair of assumptions for a MANOVA testing, and the examination of multivariate normality for each group shows p-values of 2.39905e-25 for patients alive and approximately 2.570468e-19 for patients dead which will suggests that the assumption of response varaibles have multivariate normaliy would fails. Additionally, examination of covariance matrices for each group revealed a p-value of 5.02e-23 suggesting that the assumption of the variance-covariance matrices for our response variables being equal would also fail. However, the assumption that the data is random samples and independent observations is true becasue the data observtions were collected from a random sample of emergency (unplanned) admissions for heart failures from every public (National Health Service, NHS) hospitals and private hospitals in the country to provide a represented taret population for the dataset. The one-way MANOVA test shows that significant differences were found among the the two options, alive or dead, for the death variable with a Pillai trace of 0.11531, F staistics of 41.1, and a p-value &lt; 2.2e-16. With a significant difference using the one-way ANOVA, univariate ANOVAs must be conducted as follow up tests to the MANOVA, using the Bonferroni method for controlling Type I error rates for multiple comparisons. The univarate ANOVAs for los, age, and fu_time were all significant, F = 18.114 and p-value = 2.287e-05, F = 106.8 and p-value &lt; 2.2e-16, and F = 16.485 and p-value = 5.309e-05, respectively. Post hoc analysis was not performed because there were only two categorical variable in the death variable. A total of 4 tests were conducted: 1 MANOVA and 3 ANOVA. With a total of 4 tests, we have approximately 18.55% chance of having a type I error if we did not adjust the p-value. However, we should adjust the p-value to reduce the chances of type I error and after correcting the p-value we obtain an adjusted p-value of approximately α = 0.0125. Even after correcting the p-value, both categorical variable, dead and alive, for the death variable were found to differ significantly from each other in terms of los, age, and fu_time after adjusting for the multiple comparisons with p-values of 2.287e-05, &lt; 2e-16, and 5.309e-05, respectively.</h5>
+<pre class="r"><code>HeartFailureFactors</code></pre>
+<pre><code>## # A tibble: 950 x 16
+##    death   los   age gender cancer  cabg dementia diabetes hypertension
+##    &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;        &lt;dbl&gt;
+##  1 Alive    10    74      1      0     0        0        0            1
+##  2 Alive     3    83      2      0     0        0        0            1
+##  3 Alive     1    79      1      0     0        0        1            1
+##  4 Alive    17    94      2      0     0        0        1            1
+##  5 Alive     3    63      1      0     0        0        0            1
+##  6 Alive    12    86      2      0     0        0        0            1
+##  7 Alive     2    72      2      0     0        0        0            0
+##  8 Alive     2    82      2      0     0        0        0            0
+##  9 Alive     3    57      1      0     0        0        0            1
+## 10 Alive     3    87      2      0     0        0        0            1
+## # … with 940 more rows, and 7 more variables: mental_health &lt;dbl&gt;,
+## #   arrhythmias &lt;dbl&gt;, obesity &lt;dbl&gt;, stroke &lt;dbl&gt;, quintile &lt;dbl&gt;,
+## #   ethnicgroup &lt;dbl&gt;, fu_time &lt;dbl&gt;</code></pre>
+<pre class="r"><code>HeartFailureFactors%&gt;%group_by(death)%&gt;%summarize(mean(fu_time))</code></pre>
+<pre><code>## # A tibble: 2 x 2
+##   death `mean(fu_time)`
+##   &lt;chr&gt;           &lt;dbl&gt;
+## 1 Alive            511.
+## 2 Dead             422.</code></pre>
+<pre class="r"><code>HeartFailureFactors%&gt;%group_by(death)%&gt;%summarize(means=mean(fu_time))%&gt;%summarize(`mean_diff`=diff(means))</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   mean_diff
+##       &lt;dbl&gt;
+## 1     -88.8</code></pre>
+<pre class="r"><code>rand_dist&lt;-vector() #create vector to hold diffs under null hypothesis
+for(i in 1:5000){
+new&lt;-data.frame(fu_time=sample(HeartFailureFactors$fu_time),death=HeartFailureFactors$death) #scramble columns
+rand_dist[i]&lt;-mean(new[new$death==&quot;Alive&quot;,]$fu_time)- mean(new[new$death==&quot;Dead&quot;,]$fu_time)} #compute mean difference (base R)
+
+{hist(rand_dist,main=&quot;&quot;,ylab=&quot;&quot;);abline(v=c(-88.77954,88.77954),col=&quot;red&quot;)}</code></pre>
+<p><img src="/project/project2_files/figure-html/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>mean(rand_dist&gt;88.77954 | rand_dist&lt; -88.77954) #pvalue: reject null; mean follow up time is different for individuals alive vs. individuals dead; low value because none of the randomized values are outside the red lines </code></pre>
+<pre><code>## [1] 0</code></pre>
+</div>
+<div id="i-wanted-to-perform-a-randomizatin-test-on-fu_time-becasue-i-think-that-fu_time-can-be-an-important-factor-as-to-if-an-inidividual-were-to-pass-away-from-heart-failure-or-not.-those-with-a-lower-fu_time-means-that-theyve-come-into-hospitals-more-recently-which-would-suggest-they-would-have-had-a-consultation-or-treatment-sooner-than-those-indivduals-who-have-a-higher-fu_time-becasue-those-with-a-higher-fu_time-havent-had-a-hospital-visit-recently-so-they-could-possibly-not-known-if-their-heart-was-doing-well-or-not.-additionally-i-believe-that-a-lot-can-happen-to-an-individuals-health-in-a-span-of-several-days-and-a-month-especially-if-a-patient-has-a-problem-with-such-an-important-organ-such-as-the-heart-itself.-the-observed-difference-in-mean-follow-up-time-which-is-the-number-of-days-since-admission-to-hospital-is-that-individuals-who-died-from-heart-failure-took-approximately-88.8-fewer-days-since-admission-to-a-hospital-than-the-inidviduals-who-survived-from-heart-failure.-in-other-words-those-who-died-from-this-heart-failure-came-in-more-recently-than-those-who-survived-from-this-heart-faiure.-the-null-hypothesis-is-that-the-mean-follow-up-time-is-the-same-for-individuals-who-survived-after-the-emergency-admission-for-heart-failure-vs.-individuals-who-died-after-the-emergency-admission-for-heart-failure.-while-the-alternative-hypothesis-is-that-the-mean-follow-up-time-is-different-for-individuals-who-survived-after-the-emergency-admission-for-heart-failure-vs.-individuals-who-died-after-the-emergency-admission-for-heart-failure.-the-p-value-corresponding-to-the-probability-of-observing-a-mean-difference-as-extreme-as-the-one-we-got-under-this-randomization-distribution-is-0.-with-a-low-p-value-we-can-conclude-that-we-can-reject-the-null-and-say-that-the-mean-follow-up-time-is-different-for-individuals-who-survived-after-the-emergency-admission-for-heart-failure-vs.-individuals-who-died-after-the-emergency-admission-for-heart-failure." class="section level5">
+<h5>I wanted to perform a randomizatin test on fu_time becasue I think that fu_time can be an important factor as to if an inidividual were to pass away from heart failure or not. Those with a lower fu_time means that they’ve come into hospitals more recently, which would suggest they would have had a consultation or treatment sooner than those indivduals who have a higher fu_time becasue those with a higher fu_time haven’t had a hospital visit recently so they could possibly not known if their heart was doing well or not. Additionally, I believe that a lot can happen to an individual’s health in a span of several days and a month especially if a patient has a problem with such an important organ such as the heart itself. The observed difference in mean follow up time, which is the number of days since admission to hospital, is that individuals who died from heart failure took approximately 88.8 fewer days since admission to a hospital than the inidviduals who survived from heart failure. In other words, those who died from this heart failure came in more recently than those who survived from this heart faiure. The null hypothesis is that the mean follow up time is the same for individuals who survived after the emergency admission for heart failure vs. individuals who died after the emergency admission for heart failure. While the alternative hypothesis is that the mean follow up time is different for individuals who survived after the emergency admission for heart failure vs. individuals who died after the emergency admission for heart failure. The p-value corresponding to the probability of observing a mean difference as extreme as the one we got under this “randomization distribution” is 0. With a low p-value, we can conclude that we can reject the null and say that the mean follow up time is different for individuals who survived after the emergency admission for heart failure vs. individuals who died after the emergency admission for heart failure.</h5>
+<pre class="r"><code>#Recoding to form categorical varible
+HeartFailureFactors1 &lt;- HeartFailureFactors %&gt;% mutate(quintile = recode(quintile, `1` = &quot;Highest&quot;, `2` = &quot;Upper&quot;, `3` = &quot;Middle&quot;, `4` = &quot;Lower&quot;, `5` = &quot;Lowest&quot;))
+
+#Linear Regression Model + Mean Centered Linear Regression Model 
+heartfit &lt;- lm(fu_time~age*quintile, data=HeartFailureFactors1)
+summary(heartfit)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = fu_time ~ age * quintile, data = HeartFailureFactors1)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -712.2 -311.3    1.6  268.7  674.6 
+## 
+## Coefficients:
+##                     Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)        1184.0113   209.1404   5.661    2e-08 ***
+## age                  -8.7652     2.5661  -3.416 0.000663 ***
+## quintileLower      -106.0562   255.2069  -0.416 0.677820    
+## quintileLowest     -319.2008   264.5408  -1.207 0.227882    
+## quintileMiddle     -130.5699   279.6636  -0.467 0.640693    
+## quintileUpper      -167.8589   273.3956  -0.614 0.539379    
+## age:quintileLower     1.0098     3.1744   0.318 0.750473    
+## age:quintileLowest    3.5023     3.3026   1.060 0.289207    
+## age:quintileMiddle    0.7967     3.4468   0.231 0.817266    
+## age:quintileUpper     2.3192     3.3868   0.685 0.493648    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 330.1 on 938 degrees of freedom
+##   (2 observations deleted due to missingness)
+## Multiple R-squared:  0.06401,    Adjusted R-squared:  0.05503 
+## F-statistic: 7.128 on 9 and 938 DF,  p-value: 4.863e-10</code></pre>
+<pre class="r"><code>HeartFailureFactors1$age_c &lt;- HeartFailureFactors1$age - mean(HeartFailureFactors1$age, na.rm=T)
+heartfit_c &lt;- lm(fu_time~age_c*quintile, data=HeartFailureFactors1)
+summary(heartfit_c)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = fu_time ~ age_c * quintile, data = HeartFailureFactors1)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -712.2 -311.3    1.6  268.7  674.6 
+## 
+## Coefficients:
+##                      Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)          494.3984    29.2138  16.923  &lt; 2e-16 ***
+## age_c                 -8.7652     2.5661  -3.416 0.000663 ***
+## quintileLower        -26.6084    37.2028  -0.715 0.474648    
+## quintileLowest       -43.6574    37.2515  -1.172 0.241509    
+## quintileMiddle       -67.8921    37.3872  -1.816 0.069702 .  
+## quintileUpper         14.6075    37.5489   0.389 0.697346    
+## age_c:quintileLower    1.0098     3.1744   0.318 0.750473    
+## age_c:quintileLowest   3.5023     3.3026   1.060 0.289207    
+## age_c:quintileMiddle   0.7967     3.4468   0.231 0.817266    
+## age_c:quintileUpper    2.3192     3.3868   0.685 0.493648    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 330.1 on 938 degrees of freedom
+##   (2 observations deleted due to missingness)
+## Multiple R-squared:  0.06401,    Adjusted R-squared:  0.05503 
+## F-statistic: 7.128 on 9 and 938 DF,  p-value: 4.863e-10</code></pre>
+<pre class="r"><code>#GGPlot
+HeartFailureFactors2 &lt;- HeartFailureFactors1 %&gt;% filter(!is.na(age)) %&gt;% filter(!is.na(quintile)) %&gt;% filter(!is.na(fu_time)) #removes any NAs from age_c, quintile, and fu_time 
+mean_age &lt;- mean(HeartFailureFactors2$age, na.rm=T)
+ggplot(HeartFailureFactors2, aes(age,fu_time,group_by(quintile), color=quintile)) + geom_point() + geom_smooth(method = &quot;lm&quot;) + geom_vline(xintercept = mean_age)</code></pre>
+<p><img src="/project/project2_files/figure-html/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#Assumptions with interactions 
+resids &lt;- heartfit$residuals
+fitval &lt;- heartfit$fitted.values
+ggplot() + geom_point(aes(fitval,resids)) + geom_hline(yintercept = 0, color=&quot;red&quot;)</code></pre>
+<p><img src="/project/project2_files/figure-html/unnamed-chunk-4-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ks.test(resids, &quot;pnorm&quot;, mean=0, sd(resids)) #Ho: true distribution is normal; normality not met </code></pre>
+<pre><code>## 
+##  One-sample Kolmogorov-Smirnov test
+## 
+## data:  resids
+## D = 0.083355, p-value = 3.8e-06
+## alternative hypothesis: two-sided</code></pre>
+<pre class="r"><code>library(sandwich); library(lmtest)
+bptest(heartfit) #H0: homoskedastic; homoskedastic is met</code></pre>
+<pre><code>## 
+##  studentized Breusch-Pagan test
+## 
+## data:  heartfit
+## BP = 16.698, df = 9, p-value = 0.05365</code></pre>
+<pre class="r"><code>#Robust Standard Errors (coeftest...)
+summary(heartfit)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = fu_time ~ age * quintile, data = HeartFailureFactors1)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -712.2 -311.3    1.6  268.7  674.6 
+## 
+## Coefficients:
+##                     Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)        1184.0113   209.1404   5.661    2e-08 ***
+## age                  -8.7652     2.5661  -3.416 0.000663 ***
+## quintileLower      -106.0562   255.2069  -0.416 0.677820    
+## quintileLowest     -319.2008   264.5408  -1.207 0.227882    
+## quintileMiddle     -130.5699   279.6636  -0.467 0.640693    
+## quintileUpper      -167.8589   273.3956  -0.614 0.539379    
+## age:quintileLower     1.0098     3.1744   0.318 0.750473    
+## age:quintileLowest    3.5023     3.3026   1.060 0.289207    
+## age:quintileMiddle    0.7967     3.4468   0.231 0.817266    
+## age:quintileUpper     2.3192     3.3868   0.685 0.493648    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 330.1 on 938 degrees of freedom
+##   (2 observations deleted due to missingness)
+## Multiple R-squared:  0.06401,    Adjusted R-squared:  0.05503 
+## F-statistic: 7.128 on 9 and 938 DF,  p-value: 4.863e-10</code></pre>
+<pre class="r"><code>coeftest(heartfit, vcov = vcovHC(heartfit))</code></pre>
+<pre><code>## 
+## t test of coefficients:
+## 
+##                      Estimate Std. Error t value  Pr(&gt;|t|)    
+## (Intercept)        1184.01134  175.87469  6.7321 2.909e-11 ***
+## age                  -8.76525    2.14576 -4.0849 4.786e-05 ***
+## quintileLower      -106.05622  217.92323 -0.4867    0.6266    
+## quintileLowest     -319.20082  266.49932 -1.1978    0.2313    
+## quintileMiddle     -130.56992  245.76331 -0.5313    0.5953    
+## quintileUpper      -167.85888  242.83985 -0.6912    0.4896    
+## age:quintileLower     1.00981    2.72455  0.3706    0.7110    
+## age:quintileLowest    3.50226    3.31384  1.0569    0.2908    
+## age:quintileMiddle    0.79666    3.02109  0.2637    0.7921    
+## age:quintileUpper     2.31922    2.99826  0.7735    0.4394    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+</div>
+<div id="performing-a-linear-regression-model-we-see-that-the-predicted-follow-up-time-for-individuals-in-the-1st-socio-economic-class-highest-class-with-an-age-of-zero-is-1184.0113-days.-for-every-1-year-increase-in-age-the-predicted-follow-up-time-goes-down-by-8.7652-days.-individuals-in-the-4th-socio-economic-class-lower-class-5th-socio-economic-class-lowest-class-3rd-socio-economic-class-middle-class-and-2nd-socio-economic-class-upper-class-with-an-age-of-zero-have-a-predicted-follow-up-time-that-is-106.0562-days-lower-319.2008-days-lower-130.5699-days-lower-and-167.8589-days-lower-than-the-highest-class-with-an-age-of-zero-respectively.-additionally-we-can-look-at-the-slope-and-the-interaction-betwen-age-and-socio-economic-class-and-the-effect-it-has-on-follow-up-time.-the-slope-of-age-on-follow-up-time-for-the-lower-class-lowest-class-middle-class-and-upper-class-is-1.0098-days-greater-3.5023-days-greater-0.7967-days-greater-and-2.3192-days-greater-than-the-highest-class-respectively.-we-could-also-look-at-the-estimates-if-we-used-a-centered-age.-the-predicted-follow-up-time-for-individuals-in-the-highest-class-with-average-age-is-494.3984-days.-for-every-one-year-increase-in-age-predicted-follow-up-time-goes-down-8.7652-days-for-indivdiuals-in-the-highest-class-with-average-age.-while-those-in-the-lower-lowest-middle-and-upper-class-with-average-age-have-a-predicted-follow-up-time-that-is-26.6084-days-lower-43.6574-days-lower-67.8921-days-lower-and-14.6075-days-higher-than-individuals-in-the-highest-class-with-average-age.-additionally-we-can-look-at-the-slope-and-the-interaction-betwen-centred-age-and-socio-economic-class-and-the-effect-it-has-on-follow-up-time.-the-slope-of-age-on-follow-up-time-for-lower-class-individuals-lowest-class-individual-middle-class-indivdiual-and-upper-class-individual-is-1.0098-days-greater-3.5023-days-greater-0.7967-days-greater-and-2.3192-days-greater-than-for-highest-class-individuals.-checking-for-the-assumptions-linearity-random-sample-normal-distribution-and-homoskedasticity-we-can-see-that-the-model-is-a-random-sample-due-to-the-nature-of-how-the-datasets-observation-was-collected.-additionally-we-can-conclude-linearity-is-met-via-the-residual-vs.-fitted-values-plot-homoskedasticity-is-met-via-the-breusch-pagan-bp-test-however-normal-distribution-was-not-met-according-to-the-kolmogorov-smirnov-ks-test.-homoskedasticity-was-met-but-we-shall-take-a-look-at-the-alternative-heteroskedasticity-robust-standard-errors-anyways.-following-the-heteroskedasticity-robust-standard-errors-we-see-a-trend-that-each-standard-errors-decreased-except-for-the-variables-of-quintilelowest-and-agequintilelowest-however-the-change-in-p-value-doesnt-change-the-significance-factor-of-any-of-the-variables.-the-decrease-in-standard-error-for-the-variables-of-quintilelowest-and-agequintilelowest-means-that-after-the-robust-standard-errors-these-two-varaibles-will-become-more-representative-of-the-overall-population-of-the-dataset.-lastly-using-the-adjusted-r2-value-we-can-say-that-5.503-of-varaibility-in-follow-up-time-is-explained-using-this-linear-regression-model." class="section level5">
+<h5>Performing a linear regression model, we see that the predicted follow up time for individuals in the 1st socio-economic class (highest class) with an age of zero is 1184.0113 days. For every 1 year increase in age, the predicted follow up time goes down by 8.7652 days. Individuals in the 4th socio-economic class (lower class), 5th socio-economic class (lowest class), 3rd socio-economic class (middle class), and 2nd socio-economic class (upper class) with an age of zero have a predicted follow up time that is 106.0562 days lower, 319.2008 days lower, 130.5699 days lower, and 167.8589 days lower than the highest class with an age of zero, respectively. Additionally we can look at the slope and the interaction betwen age and socio-economic class and the effect it has on follow up time. The slope of age on follow up time for the lower class, lowest class, middle class, and upper class is 1.0098 days greater, 3.5023 days greater, 0.7967 days greater, and 2.3192 days greater than the highest class, respectively. We could also look at the estimates if we used a centered age. The predicted follow up time for individuals in the highest class with average age is 494.3984 days. For every one year increase in age, predicted follow up time goes down 8.7652 days for indivdiuals in the highest class with average age. While those in the lower, lowest, middle, and upper class with average age have a predicted follow up time that is 26.6084 days lower, 43.6574 days lower, 67.8921 days lower, and 14.6075 days higher than individuals in the highest class with average age. Additionally we can look at the slope and the interaction betwen centred age and socio-economic class and the effect it has on follow up time. The slope of age on follow up time for lower class individuals, lowest class individual, middle class indivdiual, and upper class individual is 1.0098 days greater, 3.5023 days greater, 0.7967 days greater, and 2.3192 days greater than for highest class individuals. Checking for the assumptions, linearity, random sample, normal distribution, and homoskedasticity, we can see that the model is a random sample due to the nature of how the dataset’s observation was collected. Additionally, we can conclude linearity is met via the residual vs. fitted values plot, homoskedasticity is met via the Breusch-Pagan (bp) test, however, normal distribution was not met according to the Kolmogorov-Smirnov (ks) test. Homoskedasticity was met, but we shall take a look at the alternative heteroskedasticity robust standard errors anyways. Following the heteroskedasticity robust standard errors, we see a trend that each standard errors decreased except for the variables of quintileLowest and age:quintileLowest; however, the change in p-value doesn’t change the significance factor of any of the variables. The decrease in standard error for the variables of quintileLowest and age:quintileLowest means that after the robust standard errors, these two varaibles will become more representative of the overall population of the dataset. Lastly using the adjusted R^2 value, we can say that 5.503% of varaibility in follow up time is explained using this linear regression model.</h5>
+<pre class="r"><code>#Original SEs and P-values 
+summary(heartfit)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = fu_time ~ age * quintile, data = HeartFailureFactors1)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -712.2 -311.3    1.6  268.7  674.6 
+## 
+## Coefficients:
+##                     Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)        1184.0113   209.1404   5.661    2e-08 ***
+## age                  -8.7652     2.5661  -3.416 0.000663 ***
+## quintileLower      -106.0562   255.2069  -0.416 0.677820    
+## quintileLowest     -319.2008   264.5408  -1.207 0.227882    
+## quintileMiddle     -130.5699   279.6636  -0.467 0.640693    
+## quintileUpper      -167.8589   273.3956  -0.614 0.539379    
+## age:quintileLower     1.0098     3.1744   0.318 0.750473    
+## age:quintileLowest    3.5023     3.3026   1.060 0.289207    
+## age:quintileMiddle    0.7967     3.4468   0.231 0.817266    
+## age:quintileUpper     2.3192     3.3868   0.685 0.493648    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 330.1 on 938 degrees of freedom
+##   (2 observations deleted due to missingness)
+## Multiple R-squared:  0.06401,    Adjusted R-squared:  0.05503 
+## F-statistic: 7.128 on 9 and 938 DF,  p-value: 4.863e-10</code></pre>
+<pre class="r"><code>#Robust SEs and P-values 
+coeftest(heartfit, vcov = vcovHC(heartfit))</code></pre>
+<pre><code>## 
+## t test of coefficients:
+## 
+##                      Estimate Std. Error t value  Pr(&gt;|t|)    
+## (Intercept)        1184.01134  175.87469  6.7321 2.909e-11 ***
+## age                  -8.76525    2.14576 -4.0849 4.786e-05 ***
+## quintileLower      -106.05622  217.92323 -0.4867    0.6266    
+## quintileLowest     -319.20082  266.49932 -1.1978    0.2313    
+## quintileMiddle     -130.56992  245.76331 -0.5313    0.5953    
+## quintileUpper      -167.85888  242.83985 -0.6912    0.4896    
+## age:quintileLower     1.00981    2.72455  0.3706    0.7110    
+## age:quintileLowest    3.50226    3.31384  1.0569    0.2908    
+## age:quintileMiddle    0.79666    3.02109  0.2637    0.7921    
+## age:quintileUpper     2.31922    2.99826  0.7735    0.4394    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>#Bootstrapped Standard Errors
+HeartFailureFactors3 &lt;- HeartFailureFactors1 %&gt;% select(age, quintile, fu_time)
+heart_boot_dat &lt;- sample_frac(HeartFailureFactors3, replace = T)
+heart_samp_distn &lt;- replicate(5000, {
+  heart_boot_dat &lt;- sample_frac(HeartFailureFactors3, replace = T)
+  heart_boot_fit &lt;- lm(fu_time~age*quintile, data = heart_boot_dat)
+  coef(heart_boot_fit)
+})
+heart_samp_distn %&gt;% t %&gt;% as.data.frame %&gt;% summarize_all(sd)</code></pre>
+<pre><code>##   (Intercept)      age quintileLower quintileLowest quintileMiddle
+## 1    173.4738 2.120753      218.5264       258.7446       240.9178
+##   quintileUpper age:quintileLower age:quintileLowest age:quintileMiddle
+## 1      245.8046          2.739507           3.223405           2.967442
+##   age:quintileUpper
+## 1          3.040001</code></pre>
+</div>
+<div id="the-general-trend-between-all-three-standard-error-from-original-standard-error-to-robust-standard-error-and-to-bootstrapped-standard-error-is-that-the-original-standard-error-is-usually-the-largest-while-the-bootstrapped-standard-error-is-the-smallest-with-the-robust-standard-error-in-the-middle.-this-trend-is-seen-in-almost-all-variables-except-for-quintilelowest-and-agequintilelowest.-for-these-two-variables-the-order-from-greatest-to-least-is-robust-standard-error-original-standard-error-and-then-bootstrapped-standard-error.-on-the-otherhand-the-general-trend-for-the-original-p-value-compared-to-the-robust-p-value-is-that-the-robust-p-value-is-generally-smaller-compared-to-the-original-p-value.-however-there-are-anomaly-to-this-trend-as-observed-in-the-variables-of-quintilelowest-and-agequintilelowest.-for-these-two-variables-its-the-opposite-where-the-robust-p-value-is-generally-larger-compared-to-the-original-p-value." class="section level5">
+<h5>The general trend between all three standard error from original standard error to robust standard error and to bootstrapped standard error is that the original standard error is usually the largest while the bootstrapped standard error is the smallest with the robust standard error in the middle. This trend is seen in almost all variables except for quintileLowest and age:quintileLowest. For these two variables, the order from greatest to least is: robust standard error, original standard error, and then bootstrapped standard error. On the otherhand, the general trend for the original p-value compared to the robust p-value is that the robust p-value is generally smaller compared to the original p-value. However, there are anomaly to this trend as observed in the variables of quintilelowest and age:quintileLowest. For these two variables, it’s the opposite where the robust p-value is generally larger compared to the original p-value.</h5>
+<pre class="r"><code>#Recoding
+HeartFailureFactors4 &lt;- HeartFailureFactors %&gt;% mutate(death = recode(death, `Alive` = &quot;0&quot;, `Dead` = &quot;1&quot;)) %&gt;% mutate(gender = recode(gender, `1` = &quot;Male&quot;, `2` = &quot;Female&quot;))
+HeartFailureFactors4$death &lt;- as.numeric(HeartFailureFactors4$death); HeartFailureFactors4$gender &lt;- as.factor(HeartFailureFactors4$gender)
+
+#Logistic Regression Model 
+heartfit1 &lt;- glm(death~gender+cabg, data = HeartFailureFactors4, family = &quot;binomial&quot;(link=&quot;logit&quot;))
+summary(heartfit1)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = death ~ gender + cabg, family = binomial(link = &quot;logit&quot;), 
+##     data = HeartFailureFactors4)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.1808  -1.1697  -0.3993   1.1851   2.2666  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)  
+## (Intercept)  0.00799    0.09730   0.082   0.9346  
+## genderMale  -0.02619    0.13119  -0.200   0.8418  
+## cabg        -2.47077    1.04282  -2.369   0.0178 *
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 1316.8  on 949  degrees of freedom
+## Residual deviance: 1306.0  on 947  degrees of freedom
+## AIC: 1312
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<pre class="r"><code>exp(0.00799);exp(-0.02619);exp(-2.47077)</code></pre>
+<pre><code>## [1] 1.008022</code></pre>
+<pre><code>## [1] 0.97415</code></pre>
+<pre><code>## [1] 0.08451975</code></pre>
+<pre class="r"><code>#AUC, ROC, and Whatnot 
+library(plotROC)
+
+HeartFailureFactors4$prob &lt;- predict(heartfit1, type=&quot;response&quot;)
+HeartFailureFactors4$pred &lt;- ifelse(HeartFailureFactors4$prob &gt; 0.5, 1, 0)
+HeartFailureFactors4 %&gt;% select(death, gender, cabg, prob, pred)</code></pre>
+<pre><code>## # A tibble: 950 x 5
+##    death gender  cabg  prob  pred
+##    &lt;dbl&gt; &lt;fct&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1     0 Male       0 0.495     0
+##  2     0 Female     0 0.502     1
+##  3     0 Male       0 0.495     0
+##  4     0 Female     0 0.502     1
+##  5     0 Male       0 0.495     0
+##  6     0 Female     0 0.502     1
+##  7     0 Female     0 0.502     1
+##  8     0 Female     0 0.502     1
+##  9     0 Male       0 0.495     0
+## 10     0 Female     0 0.502     1
+## # … with 940 more rows</code></pre>
+<pre class="r"><code>table(prediction=HeartFailureFactors4$pred, truth=HeartFailureFactors4$death) %&gt;% addmargins</code></pre>
+<pre><code>##           truth
+## prediction   0   1 Sum
+##        0   272 256 528
+##        1   210 212 422
+##        Sum 482 468 950</code></pre>
+<pre class="r"><code>(272+212)/(950) #Accuracy </code></pre>
+<pre><code>## [1] 0.5094737</code></pre>
+<pre class="r"><code>(212/468) #Sensitivity, TPR</code></pre>
+<pre><code>## [1] 0.4529915</code></pre>
+<pre class="r"><code>(272/482) #Specificity, TNR</code></pre>
+<pre><code>## [1] 0.5643154</code></pre>
+<pre class="r"><code>(212/422) #Precision, PPV </code></pre>
+<pre><code>## [1] 0.5023697</code></pre>
+<pre class="r"><code>heart_ROCplot &lt;- ggplot(HeartFailureFactors4) + geom_roc(aes(d = death, m = prob), n.cuts = 0) + geom_segment(aes(x = 0, xend = 1, y = 0, yend = 1), lty = 2)
+heart_ROCplot</code></pre>
+<p><img src="/project/project2_files/figure-html/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>calc_auc(heart_ROCplot)</code></pre>
+<pre><code>##   PANEL group       AUC
+## 1     1    -1 0.5148553</code></pre>
+<pre class="r"><code>#Density Plot 
+HeartFailureFactors4$logit&lt;-predict(heartfit1)
+HeartFailureFactors4 %&gt;% mutate(death=factor(death,levels=c(0,1))) %&gt;% ggplot(aes(logit, fill=death))+geom_density(alpha=.3)+geom_vline(xintercept=0,lty=2)</code></pre>
+<p><img src="/project/project2_files/figure-html/unnamed-chunk-6-2.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="the-logistic-regression-shows-that-there-is-no-significant-effect-of-gender-on-prediciting-death-when-controlling-for-cabg.-however-there-are-significant-effect-of-cabg-on-predicting-death-when-controlling-for-gender.-controlling-for-cabg-previous-heart-bypass-male-and-females-individuals-are-not-significantly-different.-the-odds-of-death-for-females-are-1.008022-times-odds-for-males-while-the-odds-of-death-for-males-are-0.97415-times-odds-for-females.-another-interpretation-from-these-coefficients-is-that-when-controlling-for-gender-for-those-that-are-positive-for-cabg-those-that-have-had-a-previous-heart-bypass-odds-of-death-changed-by-a-factor-of-0.08451975-or-they-increase-by-approximately-8.45.-under-this-logistic-regression-model-we-can-determine-that-the-accuracy-of-this-model-is-0.5094737-the-sensitivity-is-0.4529915-the-specificity-is-0.5643154-and-the-precision-is-0.5023697.-additionally-we-can-see-that-the-area-under-the-curve-auc-of-this-model-is-0.5148553-which-is-bad-according-to-the-rules-of-thumb." class="section level5">
+<h5>The logistic regression shows that there is no significant effect of gender on prediciting death when controlling for cabg. However, there are significant effect of cabg on predicting death when controlling for gender. Controlling for cabg (previous heart bypass), male and females individuals are not significantly different. The odds of death for females are 1.008022 times odds for males while the odds of death for males are 0.97415 times odds for females. Another interpretation from these coefficients is that when controlling for gender, for those that are positive for cabg, those that have had a previous heart bypass, odds of death changed by a factor of 0.08451975 or they increase by approximately 8.45%. Under this logistic regression model, we can determine that the accuracy of this model is 0.5094737, the Sensitivity is 0.4529915, the Specificity is 0.5643154, and the precision is 0.5023697. Additionally, we can see that the area under the curve (AUC) of this model is 0.5148553 which is bad according to the rules of thumb.</h5>
+<pre class="r"><code>#Logistic Regression Model 
+HeartFailureFactors5 &lt;- HeartFailureFactors4 %&gt;% mutate(gender = recode(gender, `Male` = &quot;1&quot;, `Female` = &quot;2&quot;)) 
+heartfit2 &lt;- glm(death ~., data=HeartFailureFactors5, family = &quot;binomial&quot;)
+prob &lt;- predict(heartfit2, type = &quot;response&quot;)
+
+#Classification Diagnosis 
+class_diag &lt;- function(probs, truth) {
+    tab &lt;- table(factor(probs &gt; 0.5, levels = c(&quot;FALSE&quot;, &quot;TRUE&quot;)), 
+        truth)
+    acc = sum(diag(tab))/sum(tab)
+    sens = tab[2, 2]/colSums(tab)[2]
+    spec = tab[1, 1]/colSums(tab)[1]
+    ppv = tab[2, 2]/rowSums(tab)[2]
+    f1 = 2 * (sens * ppv)/(sens + ppv)
+    
+    if (is.numeric(truth) == FALSE &amp; is.logical(truth) == FALSE) {
+        truth &lt;- as.numeric(truth) - 1
+    }
+    
+    # CALCULATE EXACT AUC
+    ord &lt;- order(probs, decreasing = TRUE)
+    probs &lt;- probs[ord]
+    truth &lt;- truth[ord]
+    
+    TPR = cumsum(truth)/max(1, sum(truth))
+    FPR = cumsum(!truth)/max(1, sum(!truth))
+    
+    dup &lt;- c(probs[-1] &gt;= probs[-length(probs)], FALSE)
+    TPR &lt;- c(0, TPR[!dup], 1)
+    FPR &lt;- c(0, FPR[!dup], 1)
+    
+    n &lt;- length(TPR)
+    auc &lt;- sum(((TPR[-1] + TPR[-n])/2) * (FPR[-1] - FPR[-n]))
+    
+    data.frame(acc, sens, spec, ppv, f1, auc)
+}
+class_diag(prob, HeartFailureFactors5$death)</code></pre>
+<pre><code>##         acc      sens      spec      ppv        f1       auc
+## 1 0.6473684 0.6517094 0.6431535 0.639413 0.6455026 0.7126113</code></pre>
+<pre class="r"><code>#10-Fold CV
+set.seed(1234)
+k = 10
+
+data &lt;- HeartFailureFactors5[sample(nrow(HeartFailureFactors5)), ]  #randomly order rows
+folds &lt;- cut(seq(1:nrow(HeartFailureFactors5)), breaks = k, labels = F)  #create folds
+
+diags &lt;- NULL
+for (i in 1:k) {
+    # does for each fold
+    train &lt;- data[folds != i, ]  #create training set
+    test &lt;- data[folds == i, ]  #create testing set
+    truth &lt;- test$death  #truth labels for fold i 
+    
+    fit &lt;- glm(death ~ ., data = train, family = &quot;binomial&quot;)
+    probs &lt;- predict(fit, newdata = test, type = &quot;response&quot;)
+    
+    diags &lt;- rbind(diags, class_diag(probs, truth))  #gets diagnostics for fold i 
+}
+
+summarize_all(diags, mean)  </code></pre>
+<pre><code>##         acc      sens      spec       ppv        f1      auc
+## 1 0.6410526 0.6497884 0.6333283 0.6293413 0.6363063 0.693652</code></pre>
+<pre class="r"><code>#LASSO
+library(glmnet)
+set.seed(1234)
+y &lt;- as.matrix(HeartFailureFactors5$death)
+heart_preds &lt;- model.matrix(heartfit2)[, -1]
+heart_preds &lt;- scale(heart_preds)
+cv &lt;- cv.glmnet(heart_preds, y, family = &quot;binomial&quot;)
+lasso_fit &lt;- glmnet(heart_preds, y, family = &quot;binomial&quot;, lambda = cv$lambda.1se)
+coef(lasso_fit)</code></pre>
+<pre><code>## 19 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
+##                        s0
+## (Intercept)   -0.04199778
+## los            0.10721268
+## age            0.54196814
+## gender1        .         
+## cancer         .         
+## cabg          -0.02492927
+## dementia       0.02831117
+## diabetes       .         
+## hypertension   .         
+## mental_health  .         
+## arrhythmias    .         
+## obesity        .         
+## stroke         .         
+## quintile       .         
+## ethnicgroup    .         
+## fu_time        .         
+## prob           .         
+## pred           .         
+## logit          .</code></pre>
+<pre class="r"><code>heart_prob &lt;- predict(lasso_fit, heart_preds, type = &quot;response&quot;)
+class_diag(heart_prob, HeartFailureFactors5$death)</code></pre>
+<pre><code>##         acc      sens     spec       ppv        f1       auc
+## 1 0.6305263 0.6688034 0.593361 0.6149312 0.6407369 0.6905145</code></pre>
+<pre class="r"><code>#10-Fold CV via LASSO 
+set.seed(1234)
+k = 10
+
+data &lt;- HeartFailureFactors5 %&gt;% sample_frac  #randomly order rows
+folds &lt;- ntile(1:nrow(HeartFailureFactors5), n = 10)  #create folds
+
+diags &lt;- NULL
+for (i in 1:k) {
+    # does for each fold
+    train &lt;- data[folds != i, ]  #create training set
+    test &lt;- data[folds == i, ]  #create testing set
+    truth &lt;- test$death  #truth labels for fold i 
+    
+    fit &lt;- glm(death ~ los + age + cabg + dementia, data = train, 
+        family = &quot;binomial&quot;)
+    probs &lt;- predict(fit, newdata = test, type = &quot;response&quot;)
+    
+    diags &lt;- rbind(diags, class_diag(probs, truth))  #gets diagnostics for fold i 
+}
+
+summarize_all(diags, mean)</code></pre>
+<pre><code>##         acc      sens    spec       ppv        f1       auc
+## 1 0.6336842 0.6586092 0.60877 0.6177787 0.6351209 0.6950482</code></pre>
+</div>
+<div id="the-area-under-the-curve-auc-of-this-model-is-0.7126113-which-is-fair-according-to-the-rules-of-thumb-for-auc.-this-indicates-how-well-we-are-prediciting-overall-so-0.7126113-would-indicate-that-predicting-patients-death-based-on-the-rest-of-the-varaibles-is-a-fair-predictor.-according-to-the-classification-diagnosis-the-accuracy-of-this-model-is-0.6473684-the-sensitivity-is-0.6517094-the-specificity-is-0.6431535-and-the-precision-is-0.639413.-using-a-10-cross-folds-validation-this-auc-was-found-to-be-0.693652-which-is-a-decrease-by-approximately-.2-or-2-which-causes-us-to-assume-that-the-model-is-not-overfitting.-the-10-cross-validation-model-has-an-accuracy-of-0.6410526-the-sensitivity-of-0.6497884-the-specificity-of-0.6333283-and-the-precision-of-0.6293413-which-were-all-decreases-from-the-previous-in-sample-metrics.-using-a-lasso-model-we-can-see-that-the-coefficient-estimates-that-are-non-zeros-are-los-age-cabg-and-dementia.-these-variables-are-the-most-predictive-variables-within-the-dataset-according-to-lasso-thus-these-variables-are-retained.-the-area-uner-the-curve-auc-of-this-model-is-0.6905145-which-is-poor-according-to-the-rules-of-thumb-for-auc.-this-indicates-how-well-we-are-predicting-overall-so-0.6905145-would-indicate-that-predicting-patients-death-based-on-the-rest-of-the-variables-is-a-poor-predictor.-according-to-the-classification-diagnosis-the-lasso-model-has-an-accuracy-of-0.6305263-a-sensitivity-of-0.6688034-a-specificity-of-0.593361-and-the-precision-is-0.6149312.-compared-to-the-in-sample-metrics-the-lasso-model-has-a-lower-accuracy-specificity-and-precision.-however-this-model-does-have-a-higher-sensitivity-compared-to-in-sample-metrics.-in-terms-of-comparing-the-two-out-of-sample-predictions-10-fold-cv-this-10-fold-cvs-auc-is-approximately-the-same-roughly.-due-to-the-first-10-fold-cv-model-not-overfitting-we-can-assume-that-this-10-fold-cv-model-using-the-lasso-variables-is-also-not-overfitting.-the-10-fold-cv-model-using-the-lasso-variables-has-an-accuracy-of-0.6336842-a-sensitivity-of-0.6586092-a-specificity-of-0.60877-and-a-precision-of-0.6177787.-these-depict-a-higher-value-than-those-obtained-from-the-lasso-model-with-the-exception-of-sensitivity-in-which-the-lasso-model-has-a-higher-sensitvity-compared-to-the-10-fold-cv-via-lasso-variables." class="section level5">
+<h5>The area under the curve (AUC) of this model is 0.7126113 which is fair according to the rules of thumb for AUC. This indicates how well we are prediciting overall so 0.7126113 would indicate that predicting patient’s death based on the rest of the varaibles is a fair predictor. According to the classification diagnosis, the accuracy of this model is 0.6473684, the sensitivity is 0.6517094, the specificity is 0.6431535, and the precision is 0.639413. Using a 10-cross folds validation, this AUC was found to be 0.693652 which is a decrease by approximately .2 or 2% which causes us to assume that the model is not overfitting. The 10-cross validation model has an accuracy of 0.6410526, the sensitivity of 0.6497884, the specificity of 0.6333283, and the precision of 0.6293413, which were all decreases from the previous in-sample metrics. Using a LASSO model, we can see that the coefficient estimates that are non-zeros are los, age, cabg, and dementia. These variables are the most predictive variables within the dataset according to LASSO; thus, these variables are retained. The area uner the curve (AUC) of this model is 0.6905145 which is poor according to the rules of thumb for AUC. This indicates how well we are predicting overall so 0.6905145 would indicate that predicting patient’s death based on the rest of the variables is a poor predictor. According to the classification diagnosis, the LASSO model has an accuracy of 0.6305263, a sensitivity of 0.6688034, a specificity of 0.593361, and the precision is 0.6149312. Compared to the in-sample metrics, the LASSO model has a lower accuracy, specificity, and precision. However, this model does have a higher sensitivity compared to in-sample metrics. In terms of comparing the two out-of-sample predictions, 10-Fold CV, this 10-Fold CV’s AUC is approximately the same roughly. Due to the first 10-Fold CV model not overfitting, we can assume that this 10-Fold CV model using the LASSO variables is also not overfitting. The 10-Fold CV model using the LASSO variables has an accuracy of 0.6336842, a sensitivity of 0.6586092, a specificity of 0.60877, and a precision of 0.6177787. These depict a higher value than those obtained from the LASSO model with the exception of sensitivity in which the LASSO model has a higher sensitvity compared to the 10-Fold CV via LASSO variables.</h5>
+</div>
+<div id="overall-i-learned-a-lot-about-heart-failures-and-several-factors-that-can-play-a-role-in-heart-failures-deaths-in-the-united-states.-several-factors-that-can-play-a-role-in-death-including-length-of-stay-at-the-hospital-after-admission-for-heart-failure-age-of-patient-at-time-of-admission-gender-cabg-previous-heart-bypass-follow_up-time-number-of-days-since-admission-to-hospital-etc.-using-a-manova-test-and-anova-tests-ive-learned-that-death-from-heart-failure-were-found-to-differ-significantly-in-terms-of-the-varaible-of-length-of-stay-at-a-hospital-age-of-patient-and-follow_up-time.-another-interesting-thing-that-i-learned-is-that-mean-follow-up-time-is-different-for-individuals-who-survived-from-the-emergency-admission-into-hospitals-for-heart-failure-compared-to-individuals-who-died-from-the-emergency-admission-into-hospitals-for-heart-failure-in-this-dataset.-additionally-i-think-an-interesting-thing-to-point-out-is-that-those-in-the-lowest-class-will-have-a-predicted-follow-up-time-that-is-lower-than-any-other-class-which-indicates-that-individuals-in-the-lowest-class-have-been-seen-in-hospitals-for-recently-than-other-classes.-this-could-be-explained-by-not-having-enough-resources-needed-to-live-a-healthy-lifestyle-so-indivdiuals-in-the-lowest-class-would-need-to-go-back-and-visit-hospitals-often-not-necessarily-because-they-can-afford-the-visit-but-becasue-they-have-to-go-to-a-hospital-in-order-to-live." class="section level5">
+<h5>Overall, I learned a lot about heart failures and several factors that can play a role in heart failures deaths in the United States. Several factors that can play a role in death including length of stay at the hospital after admission for heart failure, age of patient at time of admission, gender, cabg (previous heart bypass), follow_up time (number of days since admission to hospital), etc. Using a MANOVA test and ANOVA tests, I’ve learned that death from heart failure were found to differ significantly in terms of the varaible of length of stay at a hospital, age of patient, and follow_up time. Another interesting thing that I learned is that mean follow up time is different for individuals who survived from the emergency admission into hospitals for heart failure compared to individuals who died from the emergency admission into hospitals for heart failure in this dataset. Additionally, I think an interesting thing to point out is that those in the lowest class will have a predicted follow up time that is lower than any other class which indicates that individuals in the lowest class have been seen in hospitals for recently than other classes. This could be explained by not having enough resources needed to live a healthy lifestyle, so indivdiuals in the lowest class would need to go back and visit hospitals often, not necessarily because they can afford the visit but becasue they have to go to a hospital in order to live.</h5>
+</div>
+</div>
+
+            
+        <hr>         <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div> 
+            </div>
+          </div>
+
+   <hr>  <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div> 
+        </div>
+      </div>
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="/js/docs.min.js"></script>
+<script src="/js/main.js"></script>
+
+<script src="/js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>

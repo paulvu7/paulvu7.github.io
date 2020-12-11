@@ -1,0 +1,259 @@
+---
+title: "United States Heart Failure Factors"
+author: "Paul Vu"
+date: "2020-12-12"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, fig.align = "center", warning = F, message = F,
+tidy=TRUE, tidy.opts=list(width.cutoff=60), R.options=list(max.print=100))
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+##### Heart failure or congestive heart failure is a condition that occurs when an indvidual's hearts muscles fails to pump blood as well as it should. There are many factors that could contribute to heart failure such as hypertension (high blood pressure), arrhythimias (irregular heartbeat), obesity, previous strokes, and much more. According to the CDC, heart failure accounts for approximately 13.4% of deaths in 2018. I believe that 13.4% is a relatively high number and by understanding potential factors that can cause heart failure, we can potentially reduce this 13.4% to a lower percentage. That is why I've decided to look at this dataset regarding potentail factors that causes heart failutre throughout the United States.
+
+```{R}
+#Upload datasets within R Markdown 
+library(tidyverse)
+library(readr)
+HeartFailureFactors <- read_csv("Heart Failure Factors.csv")
+nrow(HeartFailureFactors) #950 observations 
+ncol(HeartFailureFactors) #16 variables 
+```
+
+##### The dataset that I've choosen is HeartFailureFactors, and the dataset has (3) numeric variables: los (length of stay at the hospital after admission for heart failure), age (patient's age), and fu_time (follow up time which is the number of days since admission to hospital), (2) categorical variables with 5 categories: quintile (socio-economic status with 1 being the most affluent and 5 being the poorest) and ethnicgroup (1 = white, 2 = black, 3 = indian subcontinent, 4 = not known, 9 = other), and (11) binary variables where 0 indicates that the patient does not have a certain factor recorded and 1 indicates that the patient has a certain factor recorded: death, cancer, cabg (previous heart bypass), dementia, diabetes (any type of diabetes), hypertension (high blood pressure), mental_health (any mental illness), arrhythimias (irregular heartbeat), obestiy, stroke (a history of stroke), and lastly sex (which differs from the recording of 0/1 and is recorded as 1/2 with 1 being males and 2 being females). These data observtions were collected from a random sample of emergency (unplanned) admissions for heart failures from every public (National Health Service, NHS) hospitals and private hospitals in the country to provide a represented taret population for the dataset. I find this dataset interesting becasue it breaksdown potential factors that can cause heart failure in individuals, and I think it'll be interesting to view these factors overall and to see if there are any connections between any of these factors and heart failure. The HeartFailureFactors dataset contains 950 observations and 16 variables. 
+
+```{R}
+library(rstatix)
+HeartFailureFactors <- HeartFailureFactors %>% mutate(death = recode(death, `0` = "Alive", `1` = "Dead"))
+#Test MANOVA Assumptions 
+group <- HeartFailureFactors$death 
+DVs <- HeartFailureFactors %>% select(los, age, fu_time)
+#Test multivariate normality for each group (null: assumption met)
+sapply(split(DVs,group), mshapiro_test)
+#If any p<.05, stop (assumption violated). If not, test homogeneity of covariance matrices
+#Box's M test (null: homogeneity of vcov mats assumption met)
+box_m(DVs, group)
+lapply(split(DVs,group), cov)
+#p-value less than .05, indicating there's a statistically significant diference against null hypothesis indicating that homogeneity of wthin-group covariance matrices is not met. 
+
+#Manova testing 
+man1 <- manova(cbind(los, age, fu_time)~death, data=HeartFailureFactors)
+summary(man1) #significant; need to perform univariate ANOVA and post-hoc t tests to see which groups differ
+
+#Univariate ANOVAS and T-tests
+summary.aov(man1) #gets univariate ANOVAs from MANOVA object; all three are significant 
+
+1-.95^4 #chance of type I error 
+.05/4 #Bonferroni Correction
+```
+
+##### A one-way MANOVA was conducted to determine the effect of the patient's death (alive or dead) on three dependent variables (los or length of stay, age, and fu_time or follow up time). First, I tested a pair of assumptions for a MANOVA testing, and the examination of multivariate normality for each group shows p-values of 2.39905e-25 for patients alive and approximately 2.570468e-19 for patients dead which will suggests that the assumption of response varaibles have multivariate normaliy would fails. Additionally, examination of covariance matrices for each group revealed a p-value of 5.02e-23 suggesting that the assumption of the variance-covariance matrices for our response variables being equal would also fail. However, the assumption that the data is random samples and independent observations is true becasue the data observtions were collected from a random sample of emergency (unplanned) admissions for heart failures from every public (National Health Service, NHS) hospitals and private hospitals in the country to provide a represented taret population for the dataset. The one-way MANOVA test shows that significant differences were found among the the two options, alive or dead, for the death variable with a Pillai trace of 0.11531, F staistics of 41.1, and a p-value < 2.2e-16. With a significant difference using the one-way ANOVA, univariate ANOVAs must be conducted as follow up tests to the MANOVA, using the Bonferroni method for controlling Type I error rates for multiple comparisons. The univarate ANOVAs for los, age, and fu_time were all significant, F = 18.114 and p-value = 2.287e-05, F = 106.8 and p-value < 2.2e-16, and F = 16.485 and p-value = 5.309e-05, respectively. Post hoc analysis was not performed because there were only two categorical variable in the death variable. A total of 4 tests were conducted: 1 MANOVA and 3 ANOVA. With a total of 4 tests, we have approximately 18.55% chance of having a type I error if we did not adjust the p-value. However, we should adjust the p-value to reduce the chances of type I error and after correcting the p-value we obtain an adjusted p-value of approximately α = 0.0125. Even after correcting the p-value, both categorical variable, dead and alive, for the death variable were found to differ significantly from each other in terms of los, age, and fu_time after adjusting for the multiple comparisons with p-values of 2.287e-05, < 2e-16, and 5.309e-05, respectively. 
+
+```{R}
+HeartFailureFactors
+HeartFailureFactors%>%group_by(death)%>%summarize(mean(fu_time))
+HeartFailureFactors%>%group_by(death)%>%summarize(means=mean(fu_time))%>%summarize(`mean_diff`=diff(means))
+
+rand_dist<-vector() #create vector to hold diffs under null hypothesis
+for(i in 1:5000){
+new<-data.frame(fu_time=sample(HeartFailureFactors$fu_time),death=HeartFailureFactors$death) #scramble columns
+rand_dist[i]<-mean(new[new$death=="Alive",]$fu_time)- mean(new[new$death=="Dead",]$fu_time)} #compute mean difference (base R)
+
+{hist(rand_dist,main="",ylab="");abline(v=c(-88.77954,88.77954),col="red")}
+mean(rand_dist>88.77954	| rand_dist< -88.77954) #pvalue: reject null; mean follow up time is different for individuals alive vs. individuals dead; low value because none of the randomized values are outside the red lines 
+```
+
+##### I wanted to perform a randomizatin test on fu_time becasue I think that fu_time can be an important factor as to if an inidividual were to pass away from heart failure or not. Those with a lower fu_time means that they've come into hospitals more recently, which would suggest they would have had a consultation or treatment sooner than those indivduals who have a higher fu_time becasue those with a higher fu_time haven't had a hospital visit recently so they could possibly not known if their heart was doing well or not. Additionally, I believe that a lot can happen to an individual's health in a span of several days and a month especially if a patient has a problem with such an important organ such as the heart itself. The observed difference in mean follow up time, which is the number of days since admission to hospital, is that individuals who died from heart failure took approximately 88.8 fewer days since admission to a hospital than the inidviduals who survived from heart failure. In other words, those who died from this heart failure came in more recently than those who survived from this heart faiure. The null hypothesis is that the mean follow up time is the same for individuals who survived after the emergency admission for heart failure vs. individuals who died after the emergency admission for heart failure. While the alternative hypothesis is that the mean follow up time is different for individuals who survived after the emergency admission for heart failure vs. individuals who died after the emergency admission for heart failure. The p-value corresponding to the probability of observing a mean difference as extreme as the one we got under this "randomization distribution" is 0. With a low p-value, we can conclude that we can reject the null and say that the mean follow up time is different for individuals who survived after the emergency admission for heart failure vs. individuals who died after the emergency admission for heart failure.
+
+```{R}
+#Recoding to form categorical varible
+HeartFailureFactors1 <- HeartFailureFactors %>% mutate(quintile = recode(quintile, `1` = "Highest", `2` = "Upper", `3` = "Middle", `4` = "Lower", `5` = "Lowest"))
+
+#Linear Regression Model + Mean Centered Linear Regression Model 
+heartfit <- lm(fu_time~age*quintile, data=HeartFailureFactors1)
+summary(heartfit)
+HeartFailureFactors1$age_c <- HeartFailureFactors1$age - mean(HeartFailureFactors1$age, na.rm=T)
+heartfit_c <- lm(fu_time~age_c*quintile, data=HeartFailureFactors1)
+summary(heartfit_c)
+
+#GGPlot
+HeartFailureFactors2 <- HeartFailureFactors1 %>% filter(!is.na(age)) %>% filter(!is.na(quintile)) %>% filter(!is.na(fu_time)) #removes any NAs from age_c, quintile, and fu_time 
+mean_age <- mean(HeartFailureFactors2$age, na.rm=T)
+ggplot(HeartFailureFactors2, aes(age,fu_time,group_by(quintile), color=quintile)) + geom_point() + geom_smooth(method = "lm") + geom_vline(xintercept = mean_age)
+
+#Assumptions with interactions 
+resids <- heartfit$residuals
+fitval <- heartfit$fitted.values
+ggplot() + geom_point(aes(fitval,resids)) + geom_hline(yintercept = 0, color="red")
+ks.test(resids, "pnorm", mean=0, sd(resids)) #Ho: true distribution is normal; normality not met 
+library(sandwich); library(lmtest)
+bptest(heartfit) #H0: homoskedastic; homoskedastic is met
+
+#Robust Standard Errors (coeftest...)
+summary(heartfit)
+coeftest(heartfit, vcov = vcovHC(heartfit))
+```
+
+##### Performing a linear regression model, we see that the predicted follow up time for individuals in the 1st socio-economic class (highest class) with an age of zero is 1184.0113 days. For every 1 year increase in age, the predicted follow up time goes down by 8.7652 days. Individuals in the 4th socio-economic class (lower class), 5th socio-economic class (lowest class), 3rd socio-economic class (middle class), and 2nd socio-economic class (upper class) with an age of zero have a predicted follow up time that is 106.0562 days lower, 319.2008 days lower, 130.5699 days lower, and 167.8589 days lower than the highest class with an age of zero, respectively. Additionally we can look at the slope and the interaction betwen age and socio-economic class and the effect it has on follow up time. The slope of age on follow up time for the lower class, lowest class, middle class, and upper class is 1.0098 days greater,  3.5023 days greater, 0.7967 days greater, and 2.3192 days greater than the highest class, respectively. We could also look at the estimates if we used a centered age. The predicted follow up time for individuals in the highest class with average age is 494.3984 days. For every one year increase in age, predicted follow up time goes down 8.7652  days for indivdiuals in the highest class with average age. While those in the lower, lowest, middle, and upper class with average age have a predicted follow up time that is 26.6084 days lower, 43.6574 days lower, 67.8921 days lower, and 14.6075 days higher than individuals in the highest class with average age. Additionally we can look at the slope and the interaction betwen centred age and socio-economic class and the effect it has on follow up time. The slope of age on follow up time for lower class individuals, lowest class individual, middle class indivdiual, and upper class individual is 1.0098 days greater, 3.5023 days greater, 0.7967 days greater, and 2.3192 days greater than for highest class individuals. Checking for the assumptions, linearity, random sample, normal distribution, and homoskedasticity, we can see that the model is a random sample due to the nature of how the dataset's observation was collected. Additionally, we can conclude linearity is met via the residual vs. fitted values plot, homoskedasticity is met via the Breusch-Pagan (bp) test, however, normal distribution was not met according to the Kolmogorov-Smirnov (ks) test. Homoskedasticity was met, but we shall take a look at the alternative heteroskedasticity robust standard errors anyways. Following the heteroskedasticity robust standard errors, we see a trend that each standard errors decreased except for the variables of quintileLowest and age:quintileLowest; however, the change in p-value doesn't change the significance factor of any of the variables. The decrease in standard error for the variables of quintileLowest and age:quintileLowest means that after the robust standard errors, these two varaibles will become more representative of the overall population of the dataset. Lastly using the adjusted R^2 value, we can say that 5.503% of varaibility in follow up time is explained using this linear regression model. 
+
+```{R}
+#Original SEs and P-values 
+summary(heartfit)
+
+#Robust SEs and P-values 
+coeftest(heartfit, vcov = vcovHC(heartfit))
+
+#Bootstrapped Standard Errors
+HeartFailureFactors3 <- HeartFailureFactors1 %>% select(age, quintile, fu_time)
+heart_boot_dat <- sample_frac(HeartFailureFactors3, replace = T)
+heart_samp_distn <- replicate(5000, {
+  heart_boot_dat <- sample_frac(HeartFailureFactors3, replace = T)
+  heart_boot_fit <- lm(fu_time~age*quintile, data = heart_boot_dat)
+  coef(heart_boot_fit)
+})
+heart_samp_distn %>% t %>% as.data.frame %>% summarize_all(sd)
+```
+
+##### The general trend between all three standard error from original standard error to robust standard error and to bootstrapped standard error is that the original standard error is usually the largest while the bootstrapped standard error is the smallest with the robust standard error in the middle. This trend is seen in almost all variables except for quintileLowest and age:quintileLowest. For these two variables, the order from greatest to least is: robust standard error, original standard error, and then bootstrapped standard error. On the otherhand, the general trend for the original p-value compared to the robust p-value is that the robust p-value is generally smaller compared to the original p-value. However, there are anomaly to this trend as observed in the variables of quintilelowest and age:quintileLowest. For these two variables, it's the opposite where the robust p-value is generally larger compared to the original p-value. 
+
+```{R}
+#Recoding
+HeartFailureFactors4 <- HeartFailureFactors %>% mutate(death = recode(death, `Alive` = "0", `Dead` = "1")) %>% mutate(gender = recode(gender, `1` = "Male", `2` = "Female"))
+HeartFailureFactors4$death <- as.numeric(HeartFailureFactors4$death); HeartFailureFactors4$gender <- as.factor(HeartFailureFactors4$gender)
+
+#Logistic Regression Model 
+heartfit1 <- glm(death~gender+cabg, data = HeartFailureFactors4, family = "binomial"(link="logit"))
+summary(heartfit1)
+exp(0.00799);exp(-0.02619);exp(-2.47077)
+
+#AUC, ROC, and Whatnot 
+library(plotROC)
+
+HeartFailureFactors4$prob <- predict(heartfit1, type="response")
+HeartFailureFactors4$pred <- ifelse(HeartFailureFactors4$prob > 0.5, 1, 0)
+HeartFailureFactors4 %>% select(death, gender, cabg, prob, pred)
+table(prediction=HeartFailureFactors4$pred, truth=HeartFailureFactors4$death) %>% addmargins
+(272+212)/(950) #Accuracy 
+(212/468) #Sensitivity, TPR
+(272/482) #Specificity, TNR
+(212/422) #Precision, PPV 
+
+heart_ROCplot <- ggplot(HeartFailureFactors4) + geom_roc(aes(d = death, m = prob), n.cuts = 0) + geom_segment(aes(x = 0, xend = 1, y = 0, yend = 1), lty = 2)
+heart_ROCplot
+calc_auc(heart_ROCplot)
+
+#Density Plot 
+HeartFailureFactors4$logit<-predict(heartfit1)
+HeartFailureFactors4 %>% mutate(death=factor(death,levels=c(0,1))) %>% ggplot(aes(logit, fill=death))+geom_density(alpha=.3)+geom_vline(xintercept=0,lty=2)
+```
+
+##### The logistic regression shows that there is no significant effect of gender on prediciting death when controlling for cabg. However, there are significant effect of cabg on predicting death when controlling for gender. Controlling for cabg (previous heart bypass), male and females individuals are not significantly different. The odds of death for females are 1.008022 times odds for males while the odds of death for males are 0.97415 times odds for females. Another interpretation from these coefficients is that when controlling for gender, for those that are positive for cabg, those that have had a previous heart bypass, odds of death changed by a factor of 0.08451975 or they increase by approximately 8.45%. Under this logistic regression model, we can determine that the accuracy of this model is 0.5094737, the Sensitivity is 0.4529915, the Specificity is 0.5643154, and the precision is 0.5023697. Additionally, we can see that the area under the curve (AUC) of this model is 0.5148553 which is bad according to the rules of thumb. 
+
+```{R}
+#Logistic Regression Model 
+HeartFailureFactors5 <- HeartFailureFactors4 %>% mutate(gender = recode(gender, `Male` = "1", `Female` = "2")) 
+heartfit2 <- glm(death ~., data=HeartFailureFactors5, family = "binomial")
+prob <- predict(heartfit2, type = "response")
+
+#Classification Diagnosis 
+class_diag <- function(probs, truth) {
+    tab <- table(factor(probs > 0.5, levels = c("FALSE", "TRUE")), 
+        truth)
+    acc = sum(diag(tab))/sum(tab)
+    sens = tab[2, 2]/colSums(tab)[2]
+    spec = tab[1, 1]/colSums(tab)[1]
+    ppv = tab[2, 2]/rowSums(tab)[2]
+    f1 = 2 * (sens * ppv)/(sens + ppv)
+    
+    if (is.numeric(truth) == FALSE & is.logical(truth) == FALSE) {
+        truth <- as.numeric(truth) - 1
+    }
+    
+    # CALCULATE EXACT AUC
+    ord <- order(probs, decreasing = TRUE)
+    probs <- probs[ord]
+    truth <- truth[ord]
+    
+    TPR = cumsum(truth)/max(1, sum(truth))
+    FPR = cumsum(!truth)/max(1, sum(!truth))
+    
+    dup <- c(probs[-1] >= probs[-length(probs)], FALSE)
+    TPR <- c(0, TPR[!dup], 1)
+    FPR <- c(0, FPR[!dup], 1)
+    
+    n <- length(TPR)
+    auc <- sum(((TPR[-1] + TPR[-n])/2) * (FPR[-1] - FPR[-n]))
+    
+    data.frame(acc, sens, spec, ppv, f1, auc)
+}
+class_diag(prob, HeartFailureFactors5$death)
+
+#10-Fold CV
+set.seed(1234)
+k = 10
+
+data <- HeartFailureFactors5[sample(nrow(HeartFailureFactors5)), ]  #randomly order rows
+folds <- cut(seq(1:nrow(HeartFailureFactors5)), breaks = k, labels = F)  #create folds
+
+diags <- NULL
+for (i in 1:k) {
+    # does for each fold
+    train <- data[folds != i, ]  #create training set
+    test <- data[folds == i, ]  #create testing set
+    truth <- test$death  #truth labels for fold i 
+    
+    fit <- glm(death ~ ., data = train, family = "binomial")
+    probs <- predict(fit, newdata = test, type = "response")
+    
+    diags <- rbind(diags, class_diag(probs, truth))  #gets diagnostics for fold i 
+}
+
+summarize_all(diags, mean)  
+
+#LASSO
+library(glmnet)
+set.seed(1234)
+y <- as.matrix(HeartFailureFactors5$death)
+heart_preds <- model.matrix(heartfit2)[, -1]
+heart_preds <- scale(heart_preds)
+cv <- cv.glmnet(heart_preds, y, family = "binomial")
+lasso_fit <- glmnet(heart_preds, y, family = "binomial", lambda = cv$lambda.1se)
+coef(lasso_fit)
+
+heart_prob <- predict(lasso_fit, heart_preds, type = "response")
+class_diag(heart_prob, HeartFailureFactors5$death)
+
+#10-Fold CV via LASSO 
+set.seed(1234)
+k = 10
+
+data <- HeartFailureFactors5 %>% sample_frac  #randomly order rows
+folds <- ntile(1:nrow(HeartFailureFactors5), n = 10)  #create folds
+
+diags <- NULL
+for (i in 1:k) {
+    # does for each fold
+    train <- data[folds != i, ]  #create training set
+    test <- data[folds == i, ]  #create testing set
+    truth <- test$death  #truth labels for fold i 
+    
+    fit <- glm(death ~ los + age + cabg + dementia, data = train, 
+        family = "binomial")
+    probs <- predict(fit, newdata = test, type = "response")
+    
+    diags <- rbind(diags, class_diag(probs, truth))  #gets diagnostics for fold i 
+}
+
+summarize_all(diags, mean)
+```
+
+##### The area under the curve (AUC) of this model is 0.7126113 which is fair according to the rules of thumb for AUC. This indicates how well we are prediciting overall so 0.7126113 would indicate that predicting patient's death based on the rest of the varaibles is a fair predictor. According to the classification diagnosis, the accuracy of this model is 0.6473684, the sensitivity is 0.6517094, the specificity is 0.6431535, and the precision is 0.639413. Using a 10-cross folds validation, this AUC was found to be 0.693652 which is a decrease by approximately .2 or 2% which causes us to assume that the model is not overfitting. The 10-cross validation model has an accuracy of 0.6410526, the sensitivity of 0.6497884, the specificity of 0.6333283, and the precision of 0.6293413, which were all decreases from the previous in-sample metrics. Using a LASSO model, we can see that the coefficient estimates that are non-zeros are los, age, cabg, and dementia. These variables are the most predictive variables within the dataset according to LASSO; thus, these variables are retained. The area uner the curve (AUC) of this model is 0.6905145 which is poor according to the rules of thumb for AUC. This indicates how well we are predicting overall so 0.6905145 would indicate that predicting patient's death based on the rest of the variables is a poor predictor. According to the classification diagnosis, the LASSO model has an accuracy of 0.6305263, a sensitivity of 0.6688034, a specificity of 0.593361, and the precision is 0.6149312. Compared to the in-sample metrics, the LASSO model has a lower accuracy, specificity, and precision. However, this model does have a higher sensitivity compared to in-sample metrics. In terms of comparing the two out-of-sample predictions, 10-Fold CV, this 10-Fold CV's AUC is approximately the same roughly. Due to the first 10-Fold CV model not overfitting, we can assume that this 10-Fold CV model using the LASSO variables is also not overfitting. The 10-Fold CV model using the LASSO variables has an accuracy of 0.6336842, a sensitivity of 0.6586092, a specificity of 0.60877, and a precision of 0.6177787. These depict a higher value than those obtained from the LASSO model with the exception of sensitivity in which the LASSO model has a higher sensitvity compared to the 10-Fold CV via LASSO variables. 
+
+##### Overall, I learned a lot about heart failures and several factors that can play a role in heart failures deaths in the United States. Several factors that can play a role in death including length of stay at the hospital after admission for heart failure, age of patient at time of admission, gender, cabg (previous heart bypass), follow_up time (number of days since admission to hospital), etc. Using a MANOVA test and ANOVA tests, I've learned that death from heart failure were found to differ significantly in terms of the varaible of length of stay at a hospital, age of patient, and follow_up time. Another interesting thing that I learned is that mean follow up time is different for individuals who survived from the emergency admission into hospitals for heart failure compared to individuals who died from the emergency admission into hospitals for heart failure in this dataset. Additionally, I think an interesting thing to point out is that those in the lowest class will have a predicted follow up time that is lower than any other class which indicates that individuals in the lowest class have been seen in hospitals for recently than other classes. This could be explained by not having enough resources needed to live a healthy lifestyle, so indivdiuals in the lowest class would need to go back and visit hospitals often, not necessarily because they can afford the visit but becasue they have to go to a hospital in order to live. 

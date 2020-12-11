@@ -1,0 +1,42 @@
+---
+title: Communication between Python and R
+author: Paul Vu
+date: '2020-12-10'
+slug: communication-between-python-and-r
+categories: []
+tags: []
+description: ''
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, fig.align = "center", warning = F, message = F,
+tidy=TRUE, tidy.opts=list(width.cutoff=60), R.options=list(max.print=100))
+```
+
+# Communication between Python and R
+Data Science is one of the biggest growing industries in today's society with Python and R being two of the most used languages. Python is more of a general purpose programming language while R is more of a statistical computing and graphing language. Although each language has their pros and cons, we can use both languages together to effectively communicate analytics and graphical statistics about any datasets. One way that we can use both languages is through a package in R called reticulate. The reticulate package allows you to reticulate python code into R allowing both languages to be used together to do something simple as something that will be shown below or something advance such as analyzing datasets.
+
+![](/post/2020-12-10-communication-between-python-and-r_files/reticulated_python.png){width=200px height=100px}
+
+Using R, we can store "Hello my name is" into the variable hi and "!" into another variable called punctuation. 
+```{R}
+library(reticulate)
+hi <- "Hello, my name is"
+punctuation <- "!"
+```
+
+Additionally, using Python, we can store "Paul" into the variable name and "Welcome to my website" into another variable called website. 
+```{python}
+name = "Paul"
+welcome = "Welcome to my website"
+```
+
+Now, we can combine the variables together using python as demonstrated below.
+```{python}
+print(r.hi,name)
+```
+
+However, we can also combine the variables together using R as demonstrated below. This one differs from the python combination because the variables are not surrounded by ''.
+```{R}
+cat(c(hi,py$name,punctuation,py$welcome,punctuation))
+```

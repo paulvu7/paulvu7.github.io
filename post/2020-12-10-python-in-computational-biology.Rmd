@@ -1,0 +1,19 @@
+---
+title: Python in Computational Biology
+author: Paul Vu
+date: '2020-12-10'
+slug: python-in-computational-biology
+categories: []
+tags: []
+description: ''
+---
+
+# Heading of post
+
+Content of post 
+
+#Subeahding 
+
+More content
+
+#Make a post about python demonstrating some of the skills you've been working on, including have R and python talk to each other with reticulate; must include some python code that executes in a python code chunk and include output; include at least one local image
